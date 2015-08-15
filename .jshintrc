@@ -2,8 +2,18 @@
   "predef": [
     "document",
     "window",
-    "-Promise"
+    "-Promise",
+    "Promise",
+    "Sheetsee",
+    "Tabletop",
+    "L"
   ],
+  "globals": {
+    "Sheetsee": true,
+    "Tabletop": true,
+    "Promise": true,
+    "L": true
+  },
   "browser": true,
   "boss": true,
   "curly": true,
