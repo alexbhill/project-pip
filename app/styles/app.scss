@@ -8,25 +8,63 @@ $brand-secondary: darken($brand, $darken);
 $bsh: inset 0 -2px 0 $brand-secondary;
 $font: 'Lato', sans-serif;
 $padding: 0.35rem;
-$rightOffset: 0.6rem;
+$right-offset: 0.6rem;
+$medium: 'min-width: (#{rem(600)})';
+$large: 'min-width: (#{rem(1024)})';
 
+::-webkit-input-placeholder {
+  color: white;
+  opacity: 0.5;
+}
+:-moz-placeholder {
+  color: white;
+  opacity: 0.5;
+}
+::-moz-placeholder {
+  color: white;
+  opacity: 0.5;
+}
+:-ms-input-placeholder {
+  color: white;
+  opacity: 0.5;
+}
+
+html,
 body {
+  background-color: $brand;
   font-family: $font;
   font-size: rem(16);
 }
-
 svg {
   pointer-events: none;
 }
-
 [class*="-list"] {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
-
 .toggler {
   display: none;
+}
+
+
+#map {
+  bottom: 0;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+  z-index: 0;
+}
+
+
+.close {
+  display: inline-block;
+  fill: white;
+  height: 1.3rem;
+  width: 1.3rem;
 }
 
 .nav-menu {
@@ -40,25 +78,24 @@ svg {
   text-align: center;
   top: 0;
   transform:translate3d(0, rem(-350), 0);
-  transition: transform 350ms ease;
+  visibility: hidden;
+  transition: transform 350ms ease, visibility 0s ease 350s;
   z-index: 10;
 
   &.nav-on {
+    visibility: visible;
     transform:translate3d(0, 0, 0);
-    transition: transform 350ms ease;
+    transition: transform 350ms ease, visibility 0s ease 0s;
   }
 }
-
 .nav-menu .close {
   position: absolute;
-  right: $rightOffset;
+  right: $right-offset;
   top: rem(16);
 }
-
 .nav-menu .nav-menu-items {
   margin-top: rem(16);
 }
-
 .nav-menu-item {
   color: white;
   font-size: rem(20);
@@ -68,7 +105,6 @@ svg {
     box-shadow: 0 2px 0 $brand-secondary;
   }
 }
-
 .nav-icons {
   float: right;
   padding: $padding ($padding + 0.25) $padding $padding;
@@ -76,18 +112,6 @@ svg {
   text-align: right;
   z-index: 0;
 }
-
-#map {
-  bottom: 0;
-  height: 100vh;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 100vw;
-  z-index: 0;
-}
-
 .nav-icons li {
   display: inline-block;
 
@@ -95,7 +119,6 @@ svg {
     margin-right: 0.25rem;
   }
 }
-
 .nav-icon {
   display: inline-block;
   height: rem(45);
@@ -123,12 +146,6 @@ svg {
   }
 }
 
-.close {
-  display: inline-block;
-  fill: white;
-  height: 1.3rem;
-  width: 1.3rem;
-}
 
 .search {
   background-color: $brand;
@@ -152,7 +169,7 @@ svg {
 
   .close {
     position: absolute;
-    right: $rightOffset;;
+    right: $right-offset;
     top: 0.875rem;
   }
 
@@ -162,30 +179,82 @@ svg {
   }
 }
 
-.panel {
-  background-color: $brand;
-  bottom: 0;
-  box-shadow: 0 -2px 0 $brand-secondary;
-  left: 0;
-  max-height: rem(110);
+.about,
+.properties-list {
   overflow-y: scroll;
-  position: absolute;
-  right: 0;
-  display: none;
 
-  &.panel-on {
-    display: block;
+  @media (#{$medium}) {
+    flex-basis: 50%;
   }
 }
 
-.property {
+.panel {
+  -webkit-overflow-scrolling: touch;
+  background-color: $brand;
+  bottom: 0;
+  box-shadow: 0 -2px 0 $brand-secondary;
   color: white;
-  cursor: pointer;
-  display: block;
+  left: 0;
+  position: absolute;
+  right: 0;
+  transform: translate3d(0, 7rem, 0);
+  transition: transform 150ms ease;
+  z-index: 2;
+
+  @media (#{$medium}) {
+    display: flex;
+  }
+
+  .close {
+    position: absolute;
+    right: $right-offset;
+    top: rem(10);
+    z-index: 10;
+
+    @media (#{$medium}) {
+      display: none;
+    }
+  }
+
+  &.panel-on {
+    transform: translate3d(0, 0, 0);
+    transition: transform 150ms ease;
+
+    @media (#{$medium}) {
+      display: flex;
+    }
+  }
+}
+.panel-item {
+  display: none;
+}
+
+.property {
+  // display: block;
   padding: 1rem;
   position: relative;
+}
+.property p {
+  margin-top: 0;
+  margin-bottom: rem(10);
 
-  &:after {
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+.properties-list .property {
+  cursor: pointer;
+  padding-top: rem(16);
+
+  p {
+    margin: 0;
+
+    &:first-child {
+      margin-bottom: rem(10);
+    }
+  }
+
+  &:not(:first-child):after {
     background-image: linear-gradient(90deg, #5b9567 0%, #5b9567 100%);
     background-position: center top;
     background-repeat: no-repeat;
@@ -207,28 +276,62 @@ svg {
     }
   }
 }
+.panel-on:not(.active-property) .properties-list {
+  display: block;
+  max-height: rem(150);
+  overflow-y: scroll;
+}
+.property-streetview {
+  display: none;
+  text-align: center;
 
-.property p {
-  margin: 0;
+  img {
+    border-radius: 4px;
+    border: 2px solid $brand-secondary;
+    display: inline-block;
+    max-height: rem(300);
+    max-width: rem(300);
+    width: 100%;
+  }
+}
+.active-property .property {
+  display: block;
+}
 
-  &:first-child {
-    margin-bottom: rem(10);
+.about {
+  display: none;
+  padding-left: rem(16);
+
+  @media (#{$medium}) {
+    display: block;
   }
 }
 
-::-webkit-input-placeholder {
-  color: white;
-  opacity: 0.5;
-}
-:-moz-placeholder {
-  color: white;
-  opacity: 0.5;
-}
-::-moz-placeholder {
-  color: white;
-  opacity: 0.5;
-}
-:-ms-input-placeholder {
-  color: white;
-  opacity: 0.5;
+.streetview {
+  height: 0;
+  left: 0;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  transform: translate3d(0, 100%, 0);
+  width:100%;
+  z-index: 1;
+
+  &.is-loaded {
+    height: 100%;
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    transition-duration: 150ms;
+    transition-property: transform, opacity;
+    transition-timing-function: ease;
+  }
+
+  img {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: auto;
+  }
 }

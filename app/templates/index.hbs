@@ -1,38 +1,46 @@
-{{#map-container data=model query=propertiesQuery setProperty=activeProperty}}{{/map-container}}
-
-<nav class="nav nav-menu {{if menuIsToggled 'nav-on'}}">
-  <a class="close nav-close" {{ action "toggleHandler" "menuIsToggled" preventDefault=true}} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-close"></use></svg></a>
-  <ul class="nav-menu-items nav-list">
-    <li class="nav-menu-item">Home</li>
-    <li class="nav-menu-item">About</li>
-    <li class="nav-menu-item">Blog</li>
-    <li class="nav-menu-item">Search</li>
-    <li class="nav-menu-item">Contact</li>
-  </ul>
-</nav>
-
-<nav class="nav nav-icons">
-  <ul class="nav-icon-items nav-list">
-    <li><a class="nav-icon nav-icon-legend" tabindex="0"><svg viewBox="0 0 32 32"><use xlink:href="#icon-key"></use></svg></a></li>
-    <li><a class="nav-icon nav-icon-search" tabindex="0" {{ action "toggleHandler" "searchIsToggled" preventDefault=true}} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-search"></use></svg></a></li>
-    <li><a class="nav-icon nav-icon-menu" {{ action "toggleHandler" "menuIsToggled" preventDefault=true}} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-menu"></use></svg></a></li>
-  </ul>
-</nav>
-
-
 <div class="search {{ if searchIsToggled 'search-on' }}">
-  {{input type="search" value=propertiesQuery focus-in="clearSearch" placeholder="Find a property…"}}
+  {{input type="search" value=propertiesQuery placeholder="Find a property…"}}
   <a tabindex="0" class="close" {{ action "toggleHandler" "searchIsToggled" preventDefault=true}} {{ action "clearSearch" on="click" }} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-close"></use></svg></a>
 </div>
 
+<div class="page">
+  {{#if isSmallViewport}}{{#streetview-loader src=activeProperty.streetView alt=activeProperty.address activeProperty=activeProperty}}{{/streetview-loader}}{{/if}}
+  {{#map-container data=model query=propertiesQuery setProperty=activeProperty}}{{/map-container}}
 
-{{!-- put in legend here --}}
+<!--   <nav class="nav nav-menu {{if menuIsToggled 'nav-on'}}">
+    <a class="close nav-close" {{ action "toggleHandler" "menuIsToggled" preventDefault=true}} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-close"></use></svg></a>
+    <ul class="nav-menu-items nav-list">
+      <li class="nav-menu-item">Home</li>
+      <li class="nav-menu-item">About</li>
+      <li class="nav-menu-item">Blog</li>
+      <li class="nav-menu-item">Search</li>
+      <li class="nav-menu-item">Contact</li>
+    </ul>
+  </nav> -->
+
+  <nav class="nav nav-icons">
+    <ul class="nav-icon-items nav-list">
+      <!-- <li><a class="nav-icon nav-icon-legend" tabindex="0"><svg viewBox="0 0 32 32"><use xlink:href="#icon-key"></use></svg></a></li> -->
+      <li><a class="nav-icon nav-icon-search" tabindex="0" {{ action "toggleHandler" "searchIsToggled" preventDefault=true}} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-search"></use></svg></a></li>
+<!--       <li><a class="nav-icon nav-icon-menu" {{ action "toggleHandler" "menuIsToggled" preventDefault=true}} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-menu"></use></svg></a></li> -->
+    </ul>
+  </nav>
 
 
-<section class="panel {{ if panelIsToggled 'panel-on' }}">
+  {{!-- put in legend here --}}
 
-  {{#if filteredResults.length}}
-    <ul class="properties-list">
+
+  <section class="panel {{ if panelIsToggled 'panel-on' }} {{ if activeProperty.address 'active-property' }}">
+    {{#if panelIsToggled}}<a tabindex="0" class="close" {{ action "clearSearch" on="click" preventDefault=true }} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-close"></use></svg></a>{{/if}}
+
+    <div class="about panel-item">
+      <h2>Property in Practice</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet cumque qui soluta alias nisi maxime neque, dolores placeat nulla perferendis sint aut veniam est nobis laudantium nihil impedit, sequi quo.</p>
+      <p>Ipsa ea modi quae, dignissimos error dicta enim debitis vitae nostrum doloremque aperiam delectus quisquam veritatis quo ratione exercitationem facere repellendus, iusto optio vero natus accusamus alias sint! Laboriosam, mollitia.</p>
+      <p>Dolor qui, commodi fuga accusantium! Dolorum, expedita obcaecati dolorem, molestiae maiores iure. Illum, culpa et inventore pariatur sequi cupiditate blanditiis explicabo incidunt consectetur vero maxime labore harum officiis, excepturi amet!</p>
+    </div>
+
+    <ul class="properties-list panel-item">
     {{#each filteredResults as |property|}}
       <li class="property" {{action "sendPropertyCoords" property}} itemscope itemtype="http://schema.org/Property">
         <p itemscope itemtype="http://schema.org/PostalAddress"><span itemprop="streetAddress">{{ property.address }}</span></p>
@@ -40,11 +48,11 @@
       </li>
     {{/each}}
     </ul>
-  {{/if}}
 
-  {{#if activeProperty.address}}
-    <p>{{ activeProperty.address }}</p>
-    <p>{{ activeProperty.owner }}</p>
-    <p><img src="{{ activeProperty.streetView }}" alt="{{ activeProperty.address }}"></p>
-  {{/if}}
-</section>
+    <div class="property panel-item">
+      <p>{{ activeProperty.address }}</p>
+      <p>{{ activeProperty.owner }}</p>
+      <p class="property-streetview"><a href="{{ activeProperty.linkStreetview }}">{{#unless isSmallViewport}}<img src={{ if activeProperty.streetView activeProperty.streetView }}>{{/unless}}</a></p>
+    </div>
+  </section>
+</div>

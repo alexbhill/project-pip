@@ -3,20 +3,17 @@ import _ from 'npm:lodash';
 
 export default Ember.Controller.extend({
   activeProperty: {},
-
+  isSmallViewport: () => window.matchMedia(`(max-width: ${599/16}rem)`).matches,
   filteredResults: function() {
     let query = this.get('propertiesQuery').toLowerCase(),
-      activeProperty = this.get('activeProperty'),
-      properties = _.filter(this.get('model'), property => {
+      properties = _.sortByAll(_.filter(this.get('model'), property => {
         return property.address.toLowerCase().indexOf(query) !== -1 ||
           property.owner.toLowerCase().indexOf(query) !== -1;
-      });
+      }), ['lat', 'long']);
 
-    return !!query && !activeProperty.address ? properties : [];
+    return !!query ? properties : [];
   }.property('propertiesQuery', 'activeProperty'),
-
   menuIsToggled: false,
-
   panelIsToggled: function() {
     let activeProperty = this.get('activeProperty'),
       filteredResults = this.get('filteredResults');
@@ -27,19 +24,20 @@ export default Ember.Controller.extend({
       return false;
     }
   }.property('activeProperty', 'filteredResults'),
-
   propertiesQuery: '',
-
   searchIsToggled: false,
+  autoFocuser: Ember.observer('searchIsToggled', function() {
+    let searchIsToggled = this.get('searchIsToggled');
 
+    if (searchIsToggled) {
+      Ember.$('.search input').focus();
+    }
+  }),
   actions: {
-    clearSearch(isCloseButton) {
-      if (isCloseButton) {
-        this.set('activeProperty', {});
-        this.set('propertiesQuery', '');
-      }
+    clearSearch() {
+      this.set('activeProperty', {});
+      this.set('propertiesQuery', '');
     },
-
     sendPropertyCoords(property) {
       this.set('activeProperty', property);
       this.set('propertyIsToggled', true);
@@ -48,7 +46,11 @@ export default Ember.Controller.extend({
     toggleHandler(target) {
       // sends clear search action to controller
       if (target === 'searchIsToggled') {
-        this.send('clearSearch', true);
+        this.send('clearSearch');
+
+        if (this.get('searchIsToggled') === false) {
+
+        }
       }
 
       this.toggleProperty(target);

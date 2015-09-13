@@ -14,9 +14,9 @@ module.exports = function(defaults) {
       browsers: ['last 2 ios version'],
       cascade: false
     },
-    dotEnv: {
-      clientAllowedKeys: ['GOOGLE_STREETVIEW']
-    },
+    // dotEnv: {
+    //   clientAllowedKeys: ['GOOGLE_STREETVIEW']
+    // },
     outputPaths: {
       app: {
         js: '/assets/main.js',

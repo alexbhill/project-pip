@@ -40,11 +40,12 @@ export default Ember.Service.extend({
       });
 
     return data.then(data => {
-      return _.map(data, property => {
+      return _.map(_.sortByAll(data, ['lat', 'long']), property => {
         return _.merge(Ember.copy(property), {
           address: formatAddress(property.address),
           owner: _.capitalize(property.owner),
-          streetView: `https://maps.googleapis.com/maps/api/streetview?size=400x400&location=${property.lat},${property.long}&key=${ENV.GOOGLE_STREETVIEW}`
+          streetView: `https://maps.googleapis.com/maps/api/streetview?size=640x640&pitch=0&location=${property.lat},${property.long}&pitch=10&key=${ENV.STREETVIEW_KEY}`,
+          linkStreetview: `https://www.google.com/maps?q=&layer=c&cbll=${property.lat},${property.long}`
         });
       });
     });

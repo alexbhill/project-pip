@@ -9,14 +9,7 @@ if (ENV.environment === 'production') {
 }
 
 export default Ember.Component.extend({
-  // set map view when user clicks on search result
-  activeProperty: Ember.observer('setProperty', function() {
-    let setProperty = this.get('setProperty');
-
-    if (setProperty.lat && setProperty.long) {
-      this.mapProperties.map.setView([setProperty.lat, setProperty.long], 18);
-    }
-  }),
+  mapProperties: {}, // init map obj
 
   // init map when component loads
   didInsertElement() {
@@ -57,7 +50,33 @@ export default Ember.Component.extend({
     return map;
   },
 
-  mapProperties: {}, // init map obj
+  // set marker layer style
+  setMarkerStyles: layer => {
+    let owner = _.get(layer, 'feature.opts.owner').toLowerCase();
+
+    layer.setIcon(L.icon({
+      iconSize: [34, 36],
+      iconUrl: () => {
+        switch (owner) {
+          case 'moroun':
+            return `${prefix}/assets/images/grey-marker.svg`;
+          case 'illitch':
+            return `${prefix}/assets/images/red-marker.svg`;
+          default:
+            return `${prefix}/assets/images/grey-marker.svg`;
+        }
+      }()
+    }));
+  },
+
+  // set map view when user clicks on search result
+  activeProperty: Ember.observer('setProperty', function() {
+    let setProperty = this.get('setProperty');
+
+    if (setProperty.lat && setProperty.long) {
+      this.mapProperties.map.setView([setProperty.lat, setProperty.long], 18);
+    }
+  }),
 
   // filter markers based on user search
   propertyQuery: Ember.observer('query', function() {
@@ -93,24 +112,5 @@ export default Ember.Component.extend({
     }
 
     return query;
-  }),
-
-  // set marker layer style
-  setMarkerStyles: layer => {
-    let owner = _.get(layer, 'feature.opts.owner');
-
-    layer.setIcon(L.icon({
-      iconSize: [34, 36],
-      iconUrl: () => {
-        switch (owner) {
-          case 'moroun':
-            return `${prefix}/assets/images/grey-marker.svg`;
-          case 'illitch':
-            return `${prefix}/assets/images/red-marker.svg`;
-          default:
-            return `${prefix}/assets/images/grey-marker.svg`;
-        }
-      }()
-    }));
-  }
+  })
 });

@@ -20,7 +20,7 @@ module.exports = function(environment) {
       'script-src': "'self' https://cdn.mxpnl.com",
       'font-src': "'self' http://fonts.gstatic.com",
       'connect-src': "'self' https://spreadsheets.google.com http://a.tiles.mapbox.com",
-      'img-src': "'self' http://a.tiles.mapbox.com http://b.tiles.mapbox.com data:",
+      'img-src': "'self' http://a.tiles.mapbox.com http://b.tiles.mapbox.com https://maps.googleapis.com data:",
       'style-src': "'self' 'unsafe-inline' http://fonts.googleapis.com",
       'media-src': "'self'"
     },
