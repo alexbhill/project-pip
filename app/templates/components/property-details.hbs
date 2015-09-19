@@ -1,0 +1,3 @@
+<p>{{ property.address }}</p>
+<p>{{ property.owner }}</p>
+<p class="property-streetview"><a href="{{ property.linkStreetview }}">{{#unless isSmallViewport}}<img src={{ if property.streetView property.streetView }}>{{/unless}}</a></p>

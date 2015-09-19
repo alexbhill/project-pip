@@ -33,26 +33,8 @@
   <section class="panel {{ if panelIsToggled 'panel-on' }} {{ if activeProperty.address 'active-property' }}">
     {{#if panelIsToggled}}<a tabindex="0" class="close" {{ action "clearSearch" on="click" preventDefault=true }} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-close"></use></svg></a>{{/if}}
 
-    <div class="about panel-item">
-      <h2>Property in Practice</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet cumque qui soluta alias nisi maxime neque, dolores placeat nulla perferendis sint aut veniam est nobis laudantium nihil impedit, sequi quo.</p>
-      <p>Ipsa ea modi quae, dignissimos error dicta enim debitis vitae nostrum doloremque aperiam delectus quisquam veritatis quo ratione exercitationem facere repellendus, iusto optio vero natus accusamus alias sint! Laboriosam, mollitia.</p>
-      <p>Dolor qui, commodi fuga accusantium! Dolorum, expedita obcaecati dolorem, molestiae maiores iure. Illum, culpa et inventore pariatur sequi cupiditate blanditiis explicabo incidunt consectetur vero maxime labore harum officiis, excepturi amet!</p>
-    </div>
+    {{#property-details property=activeProperty}}{{/property-details}}
 
-    <ul class="properties-list panel-item">
-    {{#each filteredResults as |property|}}
-      <li class="property" {{action "sendPropertyCoords" property}} itemscope itemtype="http://schema.org/Property">
-        <p itemscope itemtype="http://schema.org/PostalAddress"><span itemprop="streetAddress">{{ property.address }}</span></p>
-        <p itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{ property.owner }}</span></p>
-      </li>
-    {{/each}}
-    </ul>
-
-    <div class="property panel-item">
-      <p>{{ activeProperty.address }}</p>
-      <p>{{ activeProperty.owner }}</p>
-      <p class="property-streetview"><a href="{{ activeProperty.linkStreetview }}">{{#unless isSmallViewport}}<img src={{ if activeProperty.streetView activeProperty.streetView }}>{{/unless}}</a></p>
-    </div>
+    {{#property-list properties=filteredResults activeProperty=activeProperty}}{{/property-list}}
   </section>
 </div>

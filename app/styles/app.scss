@@ -211,9 +211,9 @@ svg {
     top: rem(10);
     z-index: 10;
 
-    @media (#{$medium}) {
-      display: none;
-    }
+    // @media (#{$medium}) {
+    //   display: none;
+    // }
   }
 
   &.panel-on {
@@ -329,7 +329,7 @@ svg {
 
   img {
     height: 100%;
-    left: 0;
+    right: 0;
     position: absolute;
     top: 0;
     width: auto;
