@@ -16,10 +16,12 @@ export default Ember.Component.extend({
     let data = this.get('data'),
       optionsJSON = ['address', 'owner'],
       geoJSON = Sheetsee.createGeoJSON(data, optionsJSON),
-      map = L.mapbox.map('map', 'examples.map-i86l3621'),
+      map = L.mapbox.map('map', 'examples.map-i86l3621', { zoomControl: false }),
+      zoom = new L.Control.Zoom({ position: 'bottomright' }),
       markerLayer = L.mapbox.markerLayer(geoJSON).addTo(map),
       markerCluster = new L.MarkerClusterGroup();
 
+    zoom.addTo(map);
     map.scrollWheelZoom.disable();
 
     map.fitBounds(markerLayer.getBounds());
@@ -57,14 +59,15 @@ export default Ember.Component.extend({
     layer.setIcon(L.icon({
       iconSize: [34, 36],
       iconUrl: () => {
-        switch (owner) {
-          case 'moroun':
-            return `${prefix}/assets/images/grey-marker.svg`;
-          case 'illitch':
-            return `${prefix}/assets/images/red-marker.svg`;
-          default:
-            return `${prefix}/assets/images/grey-marker.svg`;
+        if(owner.indexOf('moroun') !== -1) {
+          return `${prefix}/assets/images/grey-marker.svg`;
         }
+
+        if(owner.indexOf('illitch') !== -1) {
+          return `${prefix}/assets/images/red-marker.svg`;
+        }
+
+        return `${prefix}/assets/images/grey-marker.svg`;
       }()
     }));
   },
@@ -74,7 +77,7 @@ export default Ember.Component.extend({
     let setProperty = this.get('setProperty');
 
     if (setProperty.lat && setProperty.long) {
-      this.mapProperties.map.setView([setProperty.lat, setProperty.long], 18);
+      this.mapProperties.map.setView([setProperty.lat, setProperty.long], this.mapProperties.map.getZoom());
     }
   }),
 
@@ -96,6 +99,11 @@ export default Ember.Component.extend({
       // if query returns results
       if (markerLayer.getLayers().length) {
         markerLayer.eachLayer(layer => this.setMarkerStyles(layer));
+
+        // reload listeners
+        markerLayer.addEventListener('click', e => {
+          this.set('setProperty', _.find(this.get('data'), property => property.address === e.layer.feature.opts.address));
+        });
 
         map.addLayer(markerLayer);
         map.fitBounds(markerLayer.getBounds());

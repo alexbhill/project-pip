@@ -1,28 +1,14 @@
-<div class="search {{ if searchIsToggled 'search-on' }}">
-  {{input type="search" value=propertiesQuery placeholder="Find a property…"}}
+<div class="search {{ if searchIsToggled 'search-on' }}" >
+  {{input type="search" value=propertiesQuery placeholder="Search by address or street name…" autofocus="autofocus"}}
   <a tabindex="0" class="close" {{ action "toggleHandler" "searchIsToggled" preventDefault=true}} {{ action "clearSearch" on="click" }} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-close"></use></svg></a>
 </div>
 
 <div class="page">
-  {{#if isSmallViewport}}{{#streetview-loader src=activeProperty.streetView alt=activeProperty.address activeProperty=activeProperty}}{{/streetview-loader}}{{/if}}
   {{#map-container data=model query=propertiesQuery setProperty=activeProperty}}{{/map-container}}
-
-<!--   <nav class="nav nav-menu {{if menuIsToggled 'nav-on'}}">
-    <a class="close nav-close" {{ action "toggleHandler" "menuIsToggled" preventDefault=true}} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-close"></use></svg></a>
-    <ul class="nav-menu-items nav-list">
-      <li class="nav-menu-item">Home</li>
-      <li class="nav-menu-item">About</li>
-      <li class="nav-menu-item">Blog</li>
-      <li class="nav-menu-item">Search</li>
-      <li class="nav-menu-item">Contact</li>
-    </ul>
-  </nav> -->
 
   <nav class="nav nav-icons">
     <ul class="nav-icon-items nav-list">
-      <!-- <li><a class="nav-icon nav-icon-legend" tabindex="0"><svg viewBox="0 0 32 32"><use xlink:href="#icon-key"></use></svg></a></li> -->
       <li><a class="nav-icon nav-icon-search" tabindex="0" {{ action "toggleHandler" "searchIsToggled" preventDefault=true}} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-search"></use></svg></a></li>
-<!--       <li><a class="nav-icon nav-icon-menu" {{ action "toggleHandler" "menuIsToggled" preventDefault=true}} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-menu"></use></svg></a></li> -->
     </ul>
   </nav>
 
@@ -30,11 +16,13 @@
   {{!-- put in legend here --}}
 
 
-  <section class="panel {{ if panelIsToggled 'panel-on' }} {{ if activeProperty.address 'active-property' }}">
+  <section class="panel {{ if panelIsToggled 'panel-on' }} {{ if isDetailsActive 'active-property' }}">
     {{#if panelIsToggled}}<a tabindex="0" class="close" {{ action "clearSearch" on="click" preventDefault=true }} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-close"></use></svg></a>{{/if}}
 
     {{#property-details property=activeProperty}}{{/property-details}}
 
     {{#property-list properties=filteredResults activeProperty=activeProperty}}{{/property-list}}
   </section>
+
+  {{#if isSmallViewport}}{{#streetview-loader src=activeProperty.streetView alt=activeProperty.address activeProperty=activeProperty}}{{/streetview-loader}}{{/if}}
 </div>
