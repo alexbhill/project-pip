@@ -1,9 +1,9 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-  properties: Ember.inject.service('properties'),
   model() {
-    return this.get('properties').fetch()
-      .then(results => results);
+    // no model necessary, yet
+    // all data concerns are handled
+    // with sql queries to carto
   }
 });

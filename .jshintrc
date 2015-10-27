@@ -4,13 +4,11 @@
     "window",
     "-Promise",
     "Promise",
-    "Sheetsee",
-    "Tabletop",
+    "cartodb",
     "L"
   ],
   "globals": {
-    "Sheetsee": true,
-    "Tabletop": true,
+    "cartodb": true,
     "Promise": true,
     "L": true
   },

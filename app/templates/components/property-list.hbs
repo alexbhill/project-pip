@@ -1,6 +1,6 @@
 {{#each properties as |property|}}
-  <li class="property" {{action "sendPropertyCoords" property}} itemscope itemtype="http://schema.org/Property">
-    <p itemscope itemtype="http://schema.org/PostalAddress"><span itemprop="streetAddress">{{ property.address }}</span></p>
-    <p itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{ property.owner }}</span></p>
+  <li class="property" {{action "setProperty" property}} itemscope itemtype="http://schema.org/Property">
+    <p itemscope itemtype="http://schema.org/PostalAddress"><span itemprop="streetAddress">{{ property.properties.propaddr }}</span></p>
+    <p itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{ property.properties.own_id }}</span></p>
   </li>
 {{/each}}

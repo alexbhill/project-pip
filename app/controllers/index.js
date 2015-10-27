@@ -1,62 +1,85 @@
+/**
+ * index controller
+ * controller for index, handles ui toggles
+ * for menu and search as well as the
+ * interactions between the map, search,
+ * details, and list components
+ */
+
 import Ember from 'ember';
-import _ from 'npm:lodash';
 
 export default Ember.Controller.extend({
-  menuIsToggled: false,
+
+  // menuIsToggled: false,
   searchIsToggled: false,
-  activeProperty: {},
-  isSmallViewport: () => window.matchMedia(`(max-width: ${599.9/16}rem)`).matches,
-  isQueryActive: Ember.observer('filteredResults', function () {
-    return !!this.get('filteredResults');
-  }),
-  isDetailsActive: function() {
-    let isQueryEmpty = _.isEmpty(this.get('propertiesQuery')),
-      isActiveProperty = !_.isEmpty(this.get('activeProperty'));
-    return !_.isEmpty(this.get('activeProperty'));
-    // return !!(isActiveProperty && isQueryEmpty);
-  }.property('propertiesQuery', 'activeProperty'),
-  filteredResults: function() {
-    let query = this.get('propertiesQuery').toLowerCase(),
-      properties = _.sortByAll(_.filter(this.get('model'), property => {
-        return property.address.toLowerCase().indexOf(query) !== -1 ||
-          property.owner.toLowerCase().indexOf(query) !== -1;
-      }), ['lat', 'long']);
 
-    return !!query ? properties : [];
-  }.property('propertiesQuery', 'activeProperty'),
-  panelIsToggled: function() {
-    let activeProperty = this.get('activeProperty'),
-      filteredResults = this.get('filteredResults');
+  // give search, properties, and current property
+  // initial empty values
+  search: '', // contains user search value
+  properties: [], // contains array of properties returned by search
+  activeProperty: {}, // contains data of current user selected property
 
-    if (activeProperty.address || filteredResults.length) {
-      return true;
-    } else {
-      return false;
-    }
-  }.property('activeProperty', 'filteredResults'),
-  propertiesQuery: '',
-  autoFocuser: Ember.observer('searchIsToggled', function() {
-    let searchIsToggled = this.get('searchIsToggled');
+  /**
+   * sql stores the cartoSQL instance
+   * TODO: this should probably be stored
+   * in an Ember Adapter instead?
+   */
+  sql: new cartodb.SQL({ user: 'eightbitriot' }),
 
-    if (searchIsToggled && this.get('isSmallViewport')) {
-      Ember.$('.search input').focus();
-    } else {
-      Ember.$('.search input').blur();
-    }
-  }),
-  actions: {
-    clearSearch() {
-      this.set('activeProperty', {});
-      this.set('propertiesQuery', '');
-    },
+  /**
+   * propertiesObserver observes the search field
+   * and queries carto sql according to search. It
+   * requests back geojson matching the search and
+   * then sets the properties array with the
+   * features returned. if the search box is empty
+   * then properties is cleared of any previous
+   * values.
+   */
+  propertiesObserver: Ember.observer('search', function() {
+    let search = this.get('search').toUpperCase(),
+      sql = this.get('sql'),
+      query = `SELECT * FROM property_praxis WHERE
+              own_id LIKE '%${search}%' OR
+              propaddr LIKE '%${search}%'`;
 
-    toggleHandler(target) {
-      // sends clear search action to controller
-      if (target === 'searchIsToggled') {
-        this.send('clearSearch');
+    if (search) {
+      if (this.get('activeProperty.properties')) {
+        this.set('activeProperty', {});
       }
 
-      this.toggleProperty(target);
+      sql.execute(query, {}, { format: 'geojson' })
+        .done(properties => {
+          this.set('properties', properties.features);
+        });
+    } else if (!search && this.get('properties.length')) {
+      // clear properties array of previous value
+      this.set('properties', []);
+    }
+  }),
+
+  actions: {
+    /**
+     * clearSearch clears the search, properties,
+     * and active property values
+     */
+    clearSearch() {
+      this.set('search', '');
+      this.set('properties', []);
+      this.set('activeProperty', {});
+    },
+
+    /**
+     * toggleSearch controls search toggle for
+     * users on small screens. if search has value
+     * on toggle, clear the search, properties, and
+     * activeproperty values
+     */
+    toggleSearch() {
+      this.toggleProperty('searchIsToggled');
+
+      if (this.get('search')) {
+        this.send('clearSearch');
+      }
     }
   }
 });

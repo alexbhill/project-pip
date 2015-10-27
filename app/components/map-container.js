@@ -1,124 +1,166 @@
+/**
+ * map-container
+ * component for handling the Leaflet & cartoDB map
+ * base tiles are a leaflet map using tiles from mapbox
+ * markers are a separate layer from cartodb
+ */
 import Ember from 'ember';
 import _ from 'npm:lodash';
 import ENV from 'property-praxis/config/environment';
 
-let prefix = '';
-
-if (ENV.environment === 'production') {
-  prefix = '//ughitsaaron.github.io/project-pip/';
-}
-
 export default Ember.Component.extend({
-  mapProperties: {}, // init map obj
+  /**
+   * defaultQuery stores the default carto sql query
+   */
+  defaultQuery: 'SELECT * FROM property_praxis',
 
-  // init map when component loads
-  didInsertElement() {
-    let data = this.get('data'),
-      optionsJSON = ['address', 'owner'],
-      geoJSON = Sheetsee.createGeoJSON(data, optionsJSON),
-      map = L.mapbox.map('map', 'examples.map-i86l3621', { zoomControl: false }),
-      zoom = new L.Control.Zoom({ position: 'bottomright' }),
-      markerLayer = L.mapbox.markerLayer(geoJSON).addTo(map),
-      markerCluster = new L.MarkerClusterGroup();
+  /**
+   * mapProperties & vis stores the map layer and
+   * visualization after didInsertElement()
+   */
+  mapProperties: {},
+  vis: {},
 
-    zoom.addTo(map);
-    map.scrollWheelZoom.disable();
+  /**
+   * activeProperty stores the current property
+   * selected by the user
+   */
+  activeProperty: {},
 
-    map.fitBounds(markerLayer.getBounds());
+  /**
+   * propertyObserver observes the property
+   * value and sets the view on change
+   */
+  propertyObserver: Ember.observer('activeProperty', function () {
+    let map = this.get('mapProperties'),
+      activeProperty = this.get('activeProperty'),
+      coordinates = activeProperty.geometry && activeProperty.geometry.coordinates.reverse(); // coordinates in geojson are reversed
 
-    markerLayer.eachLayer(layer => {
-      this.setMarkerStyles(layer);
-      markerCluster.addLayer(layer);
-    });
-
-    map.addLayer(markerCluster);
-
-    //  This is not a performant solution and should not
-    // go out into production like this. This is a
-    // temporary fix while the pull request against
-    // sheetsee-maps gets looked at, see more here:
-
-    // https://github.com/jlord/sheetsee-maps/pull/9
-    map.removeLayer(markerLayer);
-
-    markerCluster.addEventListener('click', e => {
-      this.set('setProperty', _.find(this.get('data'), property => property.address === e.layer.feature.opts.address));
-    });
-
-    this.mapProperties.map = map;
-    this.mapProperties.clusters = markerCluster;
-    this.mapProperties.markers = markerLayer;
-
-    return map;
-  },
-
-  // set marker layer style
-  setMarkerStyles: layer => {
-    let owner = _.get(layer, 'feature.opts.owner').toLowerCase();
-
-    layer.setIcon(L.icon({
-      iconSize: [34, 36],
-      iconUrl: () => {
-        if(owner.indexOf('moroun') !== -1) {
-          return `${prefix}/assets/images/grey-marker.svg`;
-        }
-
-        if(owner.indexOf('illitch') !== -1) {
-          return `${prefix}/assets/images/red-marker.svg`;
-        }
-
-        return `${prefix}/assets/images/grey-marker.svg`;
-      }()
-    }));
-  },
-
-  // set map view when user clicks on search result
-  activeProperty: Ember.observer('setProperty', function() {
-    let setProperty = this.get('setProperty');
-
-    if (setProperty.lat && setProperty.long) {
-      this.mapProperties.map.setView([setProperty.lat, setProperty.long], this.mapProperties.map.getZoom());
+    if (coordinates) {
+      map.setView(coordinates, 16);
     }
   }),
 
-  // filter markers based on user search
-  propertyQuery: Ember.observer('query', function() {
-    let query = this.get('query').toLowerCase(),
-      map = this.mapProperties.map,
-      markerCluster = this.mapProperties.clusters,
-      markerLayer = this.mapProperties.markers;
+  /**
+   * sql stores the cartoSQL instance
+   * TODO: this should probably be stored
+   * in an Ember Adapter instead?
+   */
+  sql: new cartodb.SQL({ user: 'eightbitriot' }),
 
-    if (query !== '') {
-      map.removeLayer(markerCluster);
-      markerLayer.setFilter(layer => {
-        return layer.opts.address.toLowerCase().indexOf(query) !== -1 ||
-          layer.opts.owner.toLowerCase().indexOf(query) !== -1;
-      });
+  /**
+   * instantiate the leaflet & cartoDB map after
+   * the dom element is loaded
+   */
+  didInsertElement() {
 
-      // load new marker layer
-      // if query returns results
-      if (markerLayer.getLayers().length) {
-        markerLayer.eachLayer(layer => this.setMarkerStyles(layer));
+    // map stores the leaflet map object
+    let map = new L.Map('map', { zoomControl: false }).setView([42.3653, -83.0693], 12),
 
-        // reload listeners
-        markerLayer.addEventListener('click', e => {
-          this.set('setProperty', _.find(this.get('data'), property => property.address === e.layer.feature.opts.address));
+      sublayers = [], // will store the carto marker sublayer
+
+      layerSource = { // carto layer defs
+        user_name: 'eightbitriot',
+        type: 'cartodb',
+        sublayers: [{
+          // initial carto sql query for marker layer
+          sql: `${this.get('defaultQuery')}`,
+
+          // set which data to make available through
+          // marker interaction
+          interactivity: 'cartodb_id, own_id, propaddr',
+
+          // set initial cartocss
+          // TODO: different colors for each owner
+          cartocss: `#property_praxis {
+            marker-fill-opacity: 0.75;
+            marker-line-color: #efefef;
+            marker-line-width: 1.5;
+            marker-placement: point;
+            marker-width: 13;
+            marker-fill: #D6301D;
+            marker-allow-overlap: true;
+          }`
+        }]
+      };
+
+    // a very weird way of repositioning &
+    // instantiating a new Leaflet zoom control
+    new L.Control.Zoom({ position: 'bottomright' }).addTo(map);
+
+    L.tileLayer(`https://api.tiles.mapbox.com/v4/${ENV.MAPBOX_ID}/{z}/{x}/{y}.png?access_token=${ENV.MAPBOX_TOKEN}`)
+      .addTo(map);
+
+    // create the carto marker layer
+    cartodb.createLayer(map, layerSource)
+      .addTo(map)
+      .on('done', (layer) => {
+        let sublayer = layer.getSubLayer(0), // get marker layer
+          sql = this.get('sql');
+
+        sublayer.setInteraction(true);
+
+        // define cursor behavior on hover over/out
+        sublayer.on('featureOver', () => {
+          document.querySelector('#map').setAttribute('style', 'cursor: pointer');
         });
 
-        map.addLayer(markerLayer);
-        map.fitBounds(markerLayer.getBounds());
-      } else {
-        // otherwise reset map to original bounds
-        map.fitBounds(markerCluster.getBounds());
-      }
-    }
+        sublayer.on('featureOut', () => {
+          document.querySelector('#map').setAttribute('style', 'cursor: default');
+        });
 
-    if (query === '') {
-      markerLayer.clearLayers();
-      map.addLayer(markerCluster);
-      map.fitBounds(markerCluster.getBounds());
-    }
+        // set the current property when a
+        // user clicks on a marker
+        sublayer.on('featureClick', (e, latlong, info, data) => {
+          sql.execute(`SELECT * FROM property_praxis WHERE cartodb_id = ${data.cartodb_id}`, {}, { format: 'geojson' })
+            .done(results => this.set('activeProperty', results.features[0]));
+        });
 
-    return query;
+        // store carto marker layer in array
+        sublayers.push(sublayer);
+      });
+
+    // store map and carto layers
+    this.set('mapProperties', map);
+    this.set('vis', sublayers);
+  },
+
+  /**
+   * filterMarkers is an Ember observer that
+   * observes user input in the search box. On
+   * input, the observer queries carto and
+   * sets the carto layer, map bounds, and
+   * view.
+   */
+  filterMarkers: Ember.observer('search', function() {
+    let map = this.get('mapProperties'),
+      vis = this.get('vis')[0],
+      search = this.get('search').toUpperCase(),
+      sql = this.get('sql'),
+
+      // set query based on user input
+      // if no user input then revert to
+      // default query
+      q = !!search ?
+        `SELECT * FROM property_praxis WHERE
+          own_id LIKE '%${search}%' OR
+          propaddr LIKE '%${search}%'` :
+        `${this.get('defaultQuery')}`;
+
+    vis.setSQL(q);
+
+    // reset map bounds
+    sql.getBounds(q)
+      .done(bounds => {
+        // if query returns only one result than there are
+        // no bounds to set. set the view & zoom on result instead
+        let isBounds = !!_.difference(bounds[0], bounds[1]).length;
+
+        if (isBounds) {
+          map.fitBounds(bounds);
+        } else {
+          map.setView(bounds[0], 16);
+        }
+      });
   })
 });

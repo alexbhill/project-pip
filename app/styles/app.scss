@@ -52,7 +52,6 @@ svg {
   display: none;
 }
 
-
 #map {
   bottom: 0;
   height: 100%;
@@ -63,7 +62,6 @@ svg {
   width: 100%;
   z-index: 0;
 }
-
 
 .close {
   display: inline-block;
@@ -169,6 +167,7 @@ svg {
     position: relative;
     text-indent: 0.6rem;
     width: 100%;
+    background-color: transparent;
   }
 
   .close {
@@ -251,7 +250,7 @@ svg {
   }
 }
 .panel-item {
-  display: none;
+  // display: none;
 }
 
 .property {

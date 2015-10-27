@@ -7,8 +7,8 @@ module.exports = function(environment) {
     baseURL: '/',
     locationType: 'auto',
     STREETVIEW_KEY: 'AIzaSyCfdrkECzxMJ_DMIl5mpkmn00TaPYWtKnk',
-    DATA_KEY: '1HxwQvvkr8h1RpCdm1S7XQJUXiSGcRbP7_Hr7ixbFct8',
-    // DATA_KEY: '1lLxFKw-O4GMkQQ5PGI128BAcU7cvyY33FOWQhyOoDfE',
+    MAPBOX_TOKEN: 'pk.eyJ1IjoidWdoaXRzYWFyb24iLCJhIjoiY2lmN3NjeDUyMHp4Z3M0bHpiaWtpOWt5OCJ9.5_jbBjvsJoFcwFoSlhxVkQ',
+    MAPBOX_ID: 'ughitsaaron.cif7scvjb0zqas7krsbxgkcv1',
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
@@ -17,10 +17,10 @@ module.exports = function(environment) {
     },
     contentSecurityPolicy: {
       'default-src': "'none'",
-      'script-src': "'self' https://cdn.mxpnl.com",
-      'font-src': "'self' http://fonts.gstatic.com",
-      'connect-src': "'self' https://spreadsheets.google.com http://a.tiles.mapbox.com",
-      'img-src': "'self' http://a.tiles.mapbox.com http://b.tiles.mapbox.com https://maps.googleapis.com data:",
+      'script-src': "'self' 'unsafe-eval' https://cdn.mxpnl.com https://*.cartodb.com http://*.cartodb.com http://*.cartocdn.com",
+      'font-src': "'self' http://themes.googleusercontent.com http://fonts.gstatic.com",
+      'connect-src': "'self' http://*.cartodb.com https://*.cartodb.com",
+      'img-src': "'self' http://tile.stamen.com http://*.cartocdn.com https://*.fastly.net https://*.mapbox.com http://cartodb.s3.amazonaws.com http://*.nokia.com https://maps.googleapis.com data:",
       'style-src': "'self' 'unsafe-inline' http://fonts.googleapis.com",
       'media-src': "'self'"
     },
