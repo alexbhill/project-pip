@@ -1,0 +1,371 @@
+@import "bourbon",
+        "neat";
+
+$brand: #97bf9f;
+$darken: 20%;
+$brand-primary: $brand;
+$brand-secondary: darken($brand, $darken);
+$brand-border: 0 -2px 0 $brand-secondary;
+$shadow: 3px 3px 5px rgba(black, 0.15);
+$font: 'Lato', sans-serif;
+$padding: 0.35rem;
+$right-offset: 0.6rem;
+$medium: 'min-width: (#{rem(600)})';
+$large: 'min-width: (#{rem(1024)})';
+
+::-webkit-input-placeholder {
+  color: white;
+  opacity: 0.5;
+}
+:-moz-placeholder {
+  color: white;
+  opacity: 0.5;
+}
+::-moz-placeholder {
+  color: white;
+  opacity: 0.5;
+}
+:-ms-input-placeholder {
+  color: white;
+  opacity: 0.5;
+}
+
+a, input, button {
+  outline: none;
+}
+
+html,
+body {
+  background-color: $brand;
+  font-family: $font;
+  font-size: rem(16);
+}
+svg {
+  pointer-events: none;
+}
+[class*="-list"] {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.toggler {
+  display: none;
+}
+
+#map {
+  bottom: 0;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+  z-index: 0;
+}
+
+.close {
+  display: inline-block;
+  fill: white;
+  height: 1.3rem;
+  width: 1.3rem;
+}
+
+.nav-menu {
+  background-color: $brand;
+  box-shadow: inset $brand-border;
+  left: 0;
+  padding: 0 rem(16);
+  padding: rem(16);
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 0;
+  transform:translate3d(0, rem(-350), 0);
+  visibility: hidden;
+  transition: transform 350ms ease, visibility 0s ease 350s;
+  z-index: 10;
+
+  &.nav-on {
+    visibility: visible;
+    transform:translate3d(0, 0, 0);
+    transition: transform 350ms ease, visibility 0s ease 0s;
+  }
+}
+.nav-menu .close {
+  position: absolute;
+  right: $right-offset;
+  top: rem(16);
+}
+.nav-menu .nav-menu-items {
+  margin-top: rem(16);
+}
+.nav-menu-item {
+  color: white;
+  font-size: rem(20);
+  padding: rem(14) 0;
+
+  &:not(:last-child) {
+    box-shadow: 0 2px 0 $brand-secondary;
+  }
+}
+.nav-icons {
+  float: right;
+  padding: $padding ($padding + 0.25) $padding $padding;
+  position: relative;
+  text-align: right;
+  z-index: 0;
+}
+.nav-icons li {
+  display: inline-block;
+
+  &:not(:last-child) {
+    margin-right: 0.25rem;
+  }
+}
+.nav-icon {
+  display: inline-block;
+  height: rem(45);
+  position: relative;
+  width: rem(45);
+  z-index: 10;
+
+  &:not(:last-child) {
+    margin-right: 0.35rem;
+  }
+
+  svg {
+    display: inline-block;
+    fill: #fefefe;
+    height:100%;
+    padding: 0.25rem;
+    stroke: #111;
+    width:100%;
+  }
+
+  a {
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.search {
+  background-color: $brand;
+  box-shadow: inset $brand-border;
+  display: block;
+  position: absolute;
+  top: 0;
+  transform: translate3d(0, -3.5rem, 0);
+  transition: transform 350ms ease;
+  width: 100%;
+  z-index: 10;
+
+  input {
+    border: none;
+    color: white;
+    line-height: rem(50);
+    position: relative;
+    text-indent: 0.6rem;
+    width: 100%;
+    background-color: transparent;
+  }
+
+  .close {
+    position: absolute;
+    right: $right-offset;
+    top: 0.875rem;
+  }
+
+  &.search-on {
+    transform: translate3d(0, 0, 0);
+    transition: transform 350ms ease;
+  }
+
+  @media (#{$large}) {
+    position: relative;
+    transform: none;
+    transition: none;
+    margin: 1rem 0 0 1rem;
+    max-width: 25rem;
+    box-shadow: $shadow;
+
+    .close {
+      display: none;
+    }
+  }
+}
+
+.nav-icon-search {
+  @media (#{$large}) {
+    display: none;
+  }
+}
+
+.about,
+.properties-list {
+  overflow-y: scroll;
+
+  @media (#{$medium}) {
+    flex-basis: 50%;
+  }
+}
+
+.panel {
+  -webkit-overflow-scrolling: touch;
+  background-color: $brand;
+  bottom: 0;
+  box-shadow: 0 -2px 0 $brand-secondary;
+  color: white;
+  left: 0;
+  position: absolute;
+  right: 0;
+  transform: translate3d(0, 7rem, 0);
+  transition: transform 150ms ease;
+  z-index: 2;
+
+  .close {
+    position: absolute;
+    right: $right-offset;
+    top: rem(10);
+    z-index: 10;
+  }
+
+  &.panel-on {
+    transform: translate3d(0, 0, 0);
+    transition: transform 150ms ease;
+  }
+
+  @media (#{$large}) {
+    position: relative;
+    z-index: 11;
+    max-width: 25rem;
+    margin: 0 0 0 1rem;
+    transform: none;
+    transition: none;
+    box-shadow: $brand-border, $shadow;
+
+    .close {
+      top: rem(-37)
+    }
+  }
+}
+.panel-item {
+  // display: none;
+}
+
+.property {
+  // display: block;
+  padding: 1rem;
+  position: relative;
+}
+.property p {
+  margin-top: 0;
+  margin-bottom: rem(10);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+.properties-list .property {
+  cursor: pointer;
+  padding-top: rem(16);
+
+  p {
+    margin: 0;
+
+    &:first-child {
+      margin-bottom: rem(10);
+    }
+  }
+
+  &:not(:first-child):after {
+    background-image: linear-gradient(90deg, #5b9567 0%, #5b9567 100%);
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: 90% rem(2);
+    content: "";
+    display: block;
+    height: rem(2);
+    left: 0;
+    position: absolute;
+    top: rem(-2);
+    width: 100%;
+  }
+
+  &:hover {
+    background-color: $brand-secondary;
+
+    &:after {
+      content: none;
+    }
+  }
+}
+.panel-on:not(.active-property) .properties-list {
+  display: block;
+  max-height: rem(150);
+  overflow-y: scroll;
+
+  @media (#{$large}) {
+    max-height: rem(350);
+  }
+}
+.active-property .property {
+  display: block;
+}
+
+.about {
+  display: none;
+  padding-left: rem(16);
+
+  @media (#{$medium}) {
+    display: block;
+  }
+}
+
+.streetview {
+  height: 0;
+  left: 0;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  transform: translate3d(0, 100%, 0);
+  width:100%;
+  z-index: 1;
+
+  &.is-loaded {
+    height: 100%;
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    transition-duration: 150ms;
+    transition-property: transform, opacity;
+    transition-timing-function: ease;
+  }
+
+  img {
+    height: 100%;
+    right: 0;
+    position: absolute;
+    top: 0;
+    width: auto;
+  }
+
+  @media (#{$large}) {
+    position: relative;
+    margin: 0 0 0 1rem;
+    max-width: 25rem;
+    z-index: 12;
+    padding: 1rem;
+    box-shadow: $brand-border, $shadow;
+    background-color: #97bf9f;
+    transform: none;
+    transition: none;
+
+    img {
+      position: relative;
+      width: 100%;
+      display: block;
+      height: auto;
+    }
+  }
+}
