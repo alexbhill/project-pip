@@ -11,8 +11,19 @@ import ENV from 'property-praxis/config/environment';
 export default Ember.Component.extend({
   /**
    * defaultQuery stores the default carto sql query
+   * adds column (own_count) for counting the number
+   * of properties owned by each owner
    */
-  defaultQuery: 'SELECT * FROM property_praxis',
+  defaultQuery: `select
+                  P.*,
+                  C.own_count
+                from property_praxis P
+                  inner join (
+                    select own_id,
+                    count(own_id) as own_count
+                      from property_praxis
+                      group by own_id
+                  ) C on P.own_id = C.own_id`,
 
   /**
    * mapProperties & vis stores the map layer and
