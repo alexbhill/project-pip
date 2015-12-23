@@ -60,7 +60,6 @@ export default Ember.Component.extend({
    * the dom element is loaded
    */
   didInsertElement() {
-
     // map stores the leaflet map object
     let map = new L.Map('map', { zoomControl: false }).setView([42.3653, -83.0693], 12),
 
@@ -110,33 +109,33 @@ export default Ember.Component.extend({
     // create the carto marker layer
     cartodb.createLayer(map, layerSource)
       .addTo(map)
-        .on('done', allLayers => {
-          allLayers.layers.forEach((layer, index) => {
-            let sublayer = allLayers.getSubLayer(index), // get marker layer
-              sql = this.get('sql');
+      .on('done', allLayers => {
+        allLayers.layers.forEach((layer, index) => {
+          let sublayer = allLayers.getSubLayer(index), // get marker layer
+            sql = this.get('sql');
 
-            sublayer.setInteraction(true);
+          sublayer.setInteraction(true);
 
-            // define cursor behavior on hover over/out
-            sublayer.on('featureOver', () => {
-              document.querySelector('#map').setAttribute('style', 'cursor: pointer');
-            });
-
-            sublayer.on('featureOut', () => {
-              document.querySelector('#map').setAttribute('style', 'cursor: default');
-            });
-
-            // set the current property when a
-            // user clicks on a marker
-            sublayer.on('featureClick', (e, latlong, info, data) => {
-              sql.execute(`SELECT * FROM property_praxis WHERE cartodb_id = ${data.cartodb_id}`, {}, { format: 'geojson' })
-                .done(results => this.set('activeProperty', results.features[0]));
-            });
-
-            // store carto marker layer in array
-            sublayers.push(sublayer);
+          // define cursor behavior on hover over/out
+          sublayer.on('featureOver', () => {
+            document.querySelector('#map').setAttribute('style', 'cursor: pointer');
           });
+
+          sublayer.on('featureOut', () => {
+            document.querySelector('#map').setAttribute('style', 'cursor: default');
+          });
+
+          // set the current property when a
+          // user clicks on a marker
+          sublayer.on('featureClick', (e, latlong, info, data) => {
+            sql.execute(`SELECT * FROM property_praxis WHERE cartodb_id = ${data.cartodb_id}`, {}, { format: 'geojson' })
+              .done(results => this.set('activeProperty', results.features[0]));
+          });
+
+          // store carto marker layer in array
+          sublayers.push(sublayer);
         });
+      });
 
       // store map and carto layers
       this.set('mapProperties', map);
