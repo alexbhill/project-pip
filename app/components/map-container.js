@@ -53,11 +53,53 @@ export default Ember.Component.extend({
   }),
 
   /**
+   * an object containing ranges and hex colors
+   * used to construct styles for marker fills
+   * based on number of properties owned by each
+   * individual speculator
+   */
+  ranges: {
+    small: {
+      range: [null, 10],
+      color: '#c00'
+    },
+    medium: {
+      range: [10, 50],
+      color: '#00c'
+    },
+    large: {
+      range: [50, 100],
+      color: '#0c0'
+    },
+    extraLarge: {
+      range: [100, null],
+      color: '#0cc'
+    }
+  },
+
+  /**
    * sql stores the cartoSQL instance
    * TODO: this should probably be stored
    * in an Ember Adapter instead?
    */
   sql: new cartodb.SQL({ user: 'eightbitriot' }),
+
+  /**
+   * creates styles for marker fill colors based on an object
+   * of ranges and hexcolors
+   * @param {Object} ranges
+   * @returns {String}
+   */
+  buildMarkerCategoryFills(ranges) {
+    return _.reduce(ranges, (result, key) => {
+      let min = key.range[0] || '',
+          max = key.range[1] || '',
+          minSelector = min && `[own_count > ${min}]`,
+          maxSelector = max && `[own_count < ${max}]`;
+
+      return `${result} ${minSelector}${maxSelector} { marker-fill: ${key.color} }\n`
+    }, '');
+  },
 
   /**
    * instantiate the leaflet & cartoDB map after
@@ -69,6 +111,9 @@ export default Ember.Component.extend({
     let map = new L.Map('map', { zoomControl: false }).setView([42.3653, -83.0693], 12),
 
       sublayers = [], // will store the carto marker sublayer
+
+      // grab marker fills
+      styles = this.get('buildMarkerCategoryFills')(this.get('ranges')),
 
       layerSource = { // carto layer defs
         user_name: 'eightbitriot',
@@ -84,14 +129,15 @@ export default Ember.Component.extend({
           // set initial cartocss
           // TODO: different colors for each owner
           cartocss: `#property_praxis {
-            marker-fill-opacity: 0.75;
-            marker-line-color: #efefef;
-            marker-line-width: 1.5;
-            marker-placement: point;
-            marker-width: 13;
-            marker-fill: #D6301D;
-            marker-allow-overlap: true;
-          }`
+                      marker-fill-opacity: 0.75;
+                      marker-line-color: #efefef;
+                      marker-line-width: 1.5;
+                      marker-placement: point;
+                      marker-width: 13;
+                      marker-allow-overlap: true;
+
+                      ${styles}
+                    }`
         }]
       };
 
