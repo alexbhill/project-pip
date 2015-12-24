@@ -7,6 +7,7 @@
  */
 
 import Ember from 'ember';
+import _ from 'npm:lodash';
 
 export default Ember.Controller.extend({
 
@@ -17,7 +18,12 @@ export default Ember.Controller.extend({
   // initial empty values
   search: '', // contains user search value
   properties: [], // contains array of properties returned by search
-  activeProperty: {}, // contains data of current user selected property
+  activeProperty: {}, // contains data of current user selected property,
+
+  sublayers: [], // for exchanging layer information between components
+
+  rangeService: Ember.inject.service('ranges'),
+  ranges: Ember.computed.reads('rangeService.ranges'),
 
   /**
    * sql stores the cartoSQL instance
@@ -35,12 +41,17 @@ export default Ember.Controller.extend({
    * then properties is cleared of any previous
    * values.
    */
-  propertiesObserver: Ember.observer('search', function() {
+  propertiesObserver: Ember.observer('search', function () {
     let search = this.get('search').toUpperCase(),
       sql = this.get('sql'),
-      query = `SELECT * FROM property_praxis WHERE
-              own_id LIKE '%${search}%' OR
-              propaddr LIKE '%${search}%'`;
+      // ranges = _.filter(this.get('ranges'), { isChecked: true }), // active ranges,
+      // rangeQuery = '', // string of sql queries,
+      // count = 'c.own_count',
+      // re = new RegExp('{{count}}', 'g'),
+
+      query = `select * from property_praxis
+              where own_id like '%${search}%'
+              or propaddr like '%${search}%'`;
 
     if (search) {
       if (this.get('activeProperty.properties')) {

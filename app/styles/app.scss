@@ -322,6 +322,10 @@ svg {
   }
 }
 
+.legend {
+  position: relative;
+}
+
 .streetview {
   height: 0;
   left: 0;
@@ -368,4 +372,17 @@ svg {
       height: auto;
     }
   }
+}
+
+.legend-label {
+  cursor: pointer;
+}
+
+.legend-icon {
+  display: inline-block;
+  width: rem(16);
+}
+
+.hide {
+  display: none;
 }

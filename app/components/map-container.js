@@ -22,21 +22,21 @@ export default Ember.Component.extend({
                    select own_id, count(own_id) as own_count
                    from property_praxis
                    group by own_id
-                 ) c on p.own_id = c.own_id
-                 group by p.cartodb_id, c.own_count`,
+                 ) c on p.own_id = c.own_id`,
 
   /**
-   * mapProperties & vis stores the map layer and
-   * visualization after didInsertElement()
+   * mapProperties & sublayers stores the map layer and
+   * sublayers after didInsertElement()
    */
   mapProperties: {},
-  vis: {},
 
   /**
    * activeProperty stores the current property
    * selected by the user
    */
   activeProperty: {},
+
+  defaultBounds: [42.3653, -83.0693], // Detroit
 
   /**
    * propertyObserver observes the property
@@ -52,16 +52,13 @@ export default Ember.Component.extend({
     }
   }),
 
-  rangeService: Ember.inject.service('ranges'),
-  ranges: Ember.computed.reads('rangeService.ranges'),
-
   /**
    * instantiate the leaflet & cartoDB map after
    * the dom element is loaded
    */
   didInsertElement() {
     // map stores the leaflet map object
-    let map = new L.Map('map', { zoomControl: false }).setView([42.3653, -83.0693], 12),
+    let map = new L.Map('map', { zoomControl: false }).setView(this.get('defaultBounds'), 12),
 
       sublayers = [], // will store the carto marker sublayer
 
@@ -69,25 +66,19 @@ export default Ember.Component.extend({
       ranges = this.get('ranges'),
 
       css = `marker-fill-opacity: 0.75;
-             marker-line-color: #efefef;
+             marker-line-color: #a3a3a3;
              marker-line-width: 1.5;
              marker-placement: point;
              marker-width: 13;
              marker-allow-overlap: true;`,
 
       layers = _.map(ranges, range => {
-        let min = !!range.min
-                ? `c.own_count > ${range.min}`
-                : '',
-
-          max = !!range.max
-              ? `c.own_count < ${range.max}`
-              : '',
-
-          hasBoth = min && max ? 'and' : '';
+        let value = 'c.own_count',
+          re = new RegExp('{{count}}', 'g'),
+          query = range.query.replace(re, value);
           
         return {
-          sql: `${defaultQuery} having ${min} ${hasBoth} ${max}`,
+          sql: `${defaultQuery} group by p.cartodb_id, c.own_count having ${query}`,
           interactivity: 'cartodb_id, own_id, propaddr',
           cartocss: `#property_praxis { ${css} marker-fill: ${range.color}; }`
         };
@@ -133,13 +124,12 @@ export default Ember.Component.extend({
           });
 
           // store carto marker layer in array
-          sublayers.push(sublayer);
+          this.send('pushLayer', sublayer);
         });
       });
 
       // store map and carto layers
       this.set('mapProperties', map);
-      this.set('vis', sublayers);
   },
 
   /**
@@ -150,33 +140,61 @@ export default Ember.Component.extend({
    * view.
    */
   filterMarkers: Ember.observer('search', function() {
-    let map = this.get('mapProperties'),
-      vis = this.get('vis')[0],
-      search = this.get('search').toUpperCase(),
-      sql = this.get('sql'),
-      defaultQuery = this.get('defaultQuery'),
+    let map = this.get('mapProperties'), // the map class
+      sublayers = this.get('sublayers'), // carto marker layers
+      search = this.get('search').toUpperCase(), // value of search
+      sql = this.get('sql'), // class for sql queries
+      defaultQuery = this.get('defaultQuery'), // default sql query 
+      ranges = _.filter(this.get('ranges'), { isChecked: true }), // active ranges
+      rangeQuery = '', // string of sql queries,
+      count = 'c.own_count',
+      re = new RegExp('{{count}}', 'g'),
+      query = ''; // sql query
+
+      // keep range query as empty string
+      // if all layers are still active
+      if (ranges.length < 4) {
+        rangeQuery = _.reduce(ranges, (result, value, key) => {
+          return `${result}${!key ? '' : 'or'} ${value.query}\n`;
+        }, 'having').replace(re, count);
+      }
 
       // set query based on user input
       // if no user input then revert to
       // default query
-      q = !!search ?
-        `select * from property_praxis where
-          own_id like '%${search}%' or
-          propaddr like '%${search}%'` :
-        `${defaultQuery}`;
+      if(!search) {
+        query = defaultQuery;
+      } else {
+        query = `${defaultQuery}
+                where p.own_id like '%${search}%'
+                or p.propaddr like '%${search}%'
+                group by p.cartodb_id, c.own_count
+                ${rangeQuery}`
+      }
 
     // reset map bounds
-    sql.getBounds(q)
+    sql.getBounds(query)
       .done(bounds => {
         // if query returns only one result than there are
         // no bounds to set. set the view & zoom on result instead
         let isBounds = !!_.difference(bounds[0], bounds[1]).length;
 
-        if (isBounds) {
+        if (search && isBounds) {
           map.fitBounds(bounds);
+        } else if (!search) {
+          map.setView(this.get('defaultBounds'), 12);
         } else {
           map.setView(bounds[0], 16);
         }
       });
-  })
+  }),
+
+  actions: {
+    // this is pretty hacky
+    pushLayer(layer) {
+      let sublayers = _.clone(this.get('sublayers'));
+      sublayers.push(layer);
+      this.set('sublayers', sublayers);
+    }
+  }
 });

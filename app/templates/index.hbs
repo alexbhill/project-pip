@@ -4,7 +4,7 @@
 </div>
 
 <div class="page">
-  {{#map-container sql=sql search=search activeProperty=activeProperty}}{{/map-container}}
+  {{#map-container sql=sql search=search activeProperty=activeProperty ranges=ranges sublayers=sublayers}}{{/map-container}}
 
   <nav class="nav nav-icons">
     <ul class="nav-icon-items nav-list">
@@ -24,5 +24,8 @@
     {{/unless}}
   </section>
 
-  {{#streetview-loader coordinates=activeProperty.geometry.coordinates alt=activeProperty.properties.propaddr}}{{/streetview-loader}}
+  {{#streetview-loader coordinates=activeProperty.geometry.coordinates alt=activeProperty.properties.propaddr}}
+  {{/streetview-loader}}
+
+  {{#map-legend ranges=ranges sublayers=sublayers}}{{/map-legend}}
 </div>

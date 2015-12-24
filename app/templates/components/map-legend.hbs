@@ -1,0 +1,16 @@
+<ul class="legend-list">
+  {{#each ranges as |range index|}}
+    <li class="legend-list-check">
+      <span class="legend-check hide">{{input type="checkbox" id=range.name name=range.name checked=range.isChecked}}</span>
+      <label class="legend-label" for="{{range.name}}">
+        {{#if range.isChecked}}
+          <svg class="legend-icon" viewBox="0 0 16 16"><use xlink:href="#icon-eye"></use></svg>
+        {{else}}
+          <svg class="legend-icon legend-icon-hidden" viewBox="0 0 16 16"><use xlink:href="#icon-eye-hidden"></use></svg>
+        {{/if}}
+
+        {{range.label}}
+      </label>
+    </li>
+  {{/each}}
+</ul>

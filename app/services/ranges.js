@@ -1,37 +1,31 @@
 import Ember from 'ember';
 
 export default Ember.Service.extend({
-  min: 0,
-  max: Infinity,
-  
-  /**
-   * an object containing ranges and hex colors
-   * used to construct styles for marker fills
-   * based on number of properties owned by each
-   * individual speculator
-   */
-  ranges: {
-    small: {
-      max: 10,
-      color: '#c00',
+  ranges: [
+    {
+      name: 'small',
+      query: '{{count}} <= 10',
+      color: '#30d18e',
+      label: "< 10",
       isChecked: true
-    },
-    medium: {
-      min: 11,
-      max: 50,
-      color: '#00c',
+    }, {
+      name: 'medium',
+      query: '{{count}} > 10 and {{count}} <= 50',
+      color: '#a6d130',
+      label: "11 – 50",
       isChecked: true
-    },
-    large: {
-      min: 51,
-      max: 100,
-      color: '#0c0',
+    }, {
+      name: 'large',
+      query: '{{count}} > 50 and {{count}} <= 100',
+      color: '#f7e43d',
+      label: "51 – 100",
       isChecked: true
-    },
-    'extra-large': {
-      min: 101,
-      color: '#0cc',
+    }, {
+      name: 'extra-large',
+      query: '{{count}} > 100',
+      color: '#c9b220',
+      label: "100 >",
       isChecked: true
     }
-  }
+  ]
 });
