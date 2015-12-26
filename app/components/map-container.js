@@ -8,22 +8,22 @@ import Ember from 'ember';
 import _ from 'npm:lodash';
 import ENV from 'property-praxis/config/environment';
 
+const log = console.log.bind(console);
+
 export default Ember.Component.extend({
   /**
    * defaultQuery stores the default carto sql query
    * adds column (own_count) for counting the number
    * of properties owned by each owner
    */
-  defaultQuery: `select
-                  P.*,
-                  C.own_count
-                from property_praxis P
-                  inner join (
-                    select own_id,
-                    count(own_id) as own_count
-                      from property_praxis
-                      group by own_id
-                  ) C on P.own_id = C.own_id`,
+  defaultQuery: `select p.*, c.own_count
+                 from property_praxis p
+                 inner join (
+                   select own_id, count(own_id) as own_count
+                   from property_praxis
+                   group by own_id
+                 ) c on p.own_id = c.own_id
+                 group by p.cartodb_id, c.own_count`,
 
   /**
    * mapProperties & vis stores the map layer and
@@ -52,54 +52,8 @@ export default Ember.Component.extend({
     }
   }),
 
-  /**
-   * an object containing ranges and hex colors
-   * used to construct styles for marker fills
-   * based on number of properties owned by each
-   * individual speculator
-   */
-  ranges: {
-    small: {
-      range: [null, 10],
-      color: '#c00'
-    },
-    medium: {
-      range: [10, 50],
-      color: '#00c'
-    },
-    large: {
-      range: [50, 100],
-      color: '#0c0'
-    },
-    extraLarge: {
-      range: [100, null],
-      color: '#0cc'
-    }
-  },
-
-  /**
-   * sql stores the cartoSQL instance
-   * TODO: this should probably be stored
-   * in an Ember Adapter instead?
-   */
-  sql: new cartodb.SQL({ user: 'eightbitriot' }),
-
-  /**
-   * creates styles for marker fill colors based on an object
-   * of ranges and hexcolors
-   * @param {Object} ranges
-   * @returns {String}
-   */
-  buildMarkerCategoryFills(ranges) {
-    return _.reduce(ranges, (result, key) => {
-      let min = key.range[0] || '',
-          max = key.range[1] || '',
-          minSelector = min && `[own_count > ${min}]`,
-          maxSelector = max && `[own_count < ${max}]`;
-
-      return `${result} ${minSelector}${maxSelector} { marker-fill: ${key.color} }\n`
-    }, '');
-  },
+  rangeService: Ember.inject.service('ranges'),
+  ranges: Ember.computed.reads('rangeService.ranges'),
 
   /**
    * instantiate the leaflet & cartoDB map after
@@ -112,33 +66,38 @@ export default Ember.Component.extend({
 
       sublayers = [], // will store the carto marker sublayer
 
-      // grab marker fills
-      styles = this.get('buildMarkerCategoryFills')(this.get('ranges')),
+      defaultQuery = this.get('defaultQuery'),
+      ranges = this.get('ranges'),
+
+      css = `marker-fill-opacity: 0.75;
+             marker-line-color: #efefef;
+             marker-line-width: 1.5;
+             marker-placement: point;
+             marker-width: 13;
+             marker-allow-overlap: true;`,
+
+      layers = _.map(ranges, range => {
+        let min = !!range.min
+                ? `c.own_count > ${range.min}`
+                : '',
+
+          max = !!range.max
+              ? `c.own_count < ${range.max}`
+              : '',
+
+          hasBoth = min && max ? 'and' : '';
+          
+        return {
+          sql: `${defaultQuery} having ${min} ${hasBoth} ${max}`,
+          interactivity: 'cartodb_id, own_id, propaddr',
+          cartocss: `#property_praxis { ${css} marker-fill: ${range.color}; }`
+        };
+      }),
 
       layerSource = { // carto layer defs
         user_name: 'eightbitriot',
         type: 'cartodb',
-        sublayers: [{
-          // initial carto sql query for marker layer
-          sql: `${this.get('defaultQuery')}`,
-
-          // set which data to make available through
-          // marker interaction
-          interactivity: 'cartodb_id, own_id, propaddr',
-
-          // set initial cartocss
-          // TODO: different colors for each owner
-          cartocss: `#property_praxis {
-                      marker-fill-opacity: 0.75;
-                      marker-line-color: #efefef;
-                      marker-line-width: 1.5;
-                      marker-placement: point;
-                      marker-width: 13;
-                      marker-allow-overlap: true;
-
-                      ${styles}
-                    }`
-        }]
+        sublayers: layers
       };
 
     // a very weird way of repositioning &
@@ -151,35 +110,37 @@ export default Ember.Component.extend({
     // create the carto marker layer
     cartodb.createLayer(map, layerSource)
       .addTo(map)
-      .on('done', (layer) => {
-        let sublayer = layer.getSubLayer(0), // get marker layer
-          sql = this.get('sql');
+        .on('done', allLayers => {
+          allLayers.layers.forEach((layer, index) => {
+            let sublayer = allLayers.getSubLayer(index), // get marker layer
+              sql = this.get('sql');
 
-        sublayer.setInteraction(true);
+            sublayer.setInteraction(true);
 
-        // define cursor behavior on hover over/out
-        sublayer.on('featureOver', () => {
-          document.querySelector('#map').setAttribute('style', 'cursor: pointer');
+            // define cursor behavior on hover over/out
+            sublayer.on('featureOver', () => {
+              document.querySelector('#map').setAttribute('style', 'cursor: pointer');
+            });
+
+            sublayer.on('featureOut', () => {
+              document.querySelector('#map').setAttribute('style', 'cursor: default');
+            });
+
+            // set the current property when a
+            // user clicks on a marker
+            sublayer.on('featureClick', (e, latlong, info, data) => {
+              sql.execute(`SELECT * FROM property_praxis WHERE cartodb_id = ${data.cartodb_id}`, {}, { format: 'geojson' })
+                .done(results => this.set('activeProperty', results.features[0]));
+            });
+
+            // store carto marker layer in array
+            sublayers.push(sublayer);
+          });
         });
 
-        sublayer.on('featureOut', () => {
-          document.querySelector('#map').setAttribute('style', 'cursor: default');
-        });
-
-        // set the current property when a
-        // user clicks on a marker
-        sublayer.on('featureClick', (e, latlong, info, data) => {
-          sql.execute(`SELECT * FROM property_praxis WHERE cartodb_id = ${data.cartodb_id}`, {}, { format: 'geojson' })
-            .done(results => this.set('activeProperty', results.features[0]));
-        });
-
-        // store carto marker layer in array
-        sublayers.push(sublayer);
-      });
-
-    // store map and carto layers
-    this.set('mapProperties', map);
-    this.set('vis', sublayers);
+      // store map and carto layers
+      this.set('mapProperties', map);
+      this.set('vis', sublayers);
   },
 
   /**
@@ -194,17 +155,16 @@ export default Ember.Component.extend({
       vis = this.get('vis')[0],
       search = this.get('search').toUpperCase(),
       sql = this.get('sql'),
+      defaultQuery = this.get('defaultQuery'),
 
       // set query based on user input
       // if no user input then revert to
       // default query
       q = !!search ?
-        `SELECT * FROM property_praxis WHERE
-          own_id LIKE '%${search}%' OR
-          propaddr LIKE '%${search}%'` :
-        `${this.get('defaultQuery')}`;
-
-    vis.setSQL(q);
+        `select * from property_praxis where
+          own_id like '%${search}%' or
+          propaddr like '%${search}%'` :
+        `${defaultQuery}`;
 
     // reset map bounds
     sql.getBounds(q)
