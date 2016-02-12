@@ -7,9 +7,7 @@
   {{#map-container sql=sql search=search activeProperty=activeProperty ranges=ranges sublayers=sublayers}}{{/map-container}}
 
   <nav class="nav nav-icons">
-    <ul class="nav-icon-items nav-list">
-      <li><a class="nav-icon nav-icon-search" tabindex="0" {{ action "toggleSearch" preventDefault=true}} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-search"></use></svg></a></li>
-    </ul>
+    <a class="nav-icon nav-icon-search btn" tabindex="0" {{ action "toggleSearch" preventDefault=true}} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-search"></use></svg></a>
   </nav>
 
   <section class="panel panel-on">
@@ -27,5 +25,11 @@
   {{#streetview-loader coordinates=activeProperty.geometry.coordinates alt=activeProperty.properties.propaddr}}
   {{/streetview-loader}}
 
-  {{#map-legend ranges=ranges sublayers=sublayers}}{{/map-legend}}
+  {{#map-legend ranges=ranges sublayers=sublayers legendIsToggled=legendIsToggled }}{{/map-legend}}
+
+  <a href="#" class="legend-toggle btn" {{ action "toggleLegend" preventDefault=true }}>
+    <svg viewBox="0 0 16 16">
+      <use xlink:href="#icon-compass"></use>
+    </svg>
+  </a>
 </div>

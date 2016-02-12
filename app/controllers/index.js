@@ -7,11 +7,11 @@
  */
 
 import Ember from 'ember';
-import _ from 'npm:lodash';
+// import _ from 'npm:lodash';
 
 export default Ember.Controller.extend({
 
-  // menuIsToggled: false,
+  legendIsToggled: false,
   searchIsToggled: false,
 
   // give search, properties, and current property
@@ -30,7 +30,8 @@ export default Ember.Controller.extend({
    * TODO: this should probably be stored
    * in an Ember Adapter instead?
    */
-  sql: new cartodb.SQL({ user: 'eightbitriot' }),
+  sqlService: Ember.inject.service('sql'),
+  sql: Ember.computed.reads('sqlService.sql'),
 
   /**
    * propertiesObserver observes the search field
@@ -91,6 +92,13 @@ export default Ember.Controller.extend({
       if (this.get('search')) {
         this.send('clearSearch');
       }
+    },
+
+    /**
+     * toggleLegend controls legend toggling
+     */
+    toggleLegend() {
+      this.toggleProperty('legendIsToggled');
     }
   }
 });

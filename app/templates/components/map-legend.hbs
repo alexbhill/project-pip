@@ -1,13 +1,13 @@
+<a tabindex="0" class="close" href="#" {{ action "toggleLegend" preventDefault=true }}><svg viewBox="0 0 32 32"><use xlink:href="#icon-close"></use></svg></a>
+<span class="legend-description">Total number of properties owned by speculator.</span>
 <ul class="legend-list">
-  {{#each ranges as |range index|}}
-    <li class="legend-list-check">
+  {{#each ranges as |range|}}
+    <li class="legend-item legend-{{range.name}}">
       <span class="legend-check hide">{{input type="checkbox" id=range.name name=range.name checked=range.isChecked}}</span>
       <label class="legend-label" for="{{range.name}}">
-        {{#if range.isChecked}}
-          <svg class="legend-icon" viewBox="0 0 16 16"><use xlink:href="#icon-eye"></use></svg>
-        {{else}}
-          <svg class="legend-icon legend-icon-hidden" viewBox="0 0 16 16"><use xlink:href="#icon-eye-hidden"></use></svg>
-        {{/if}}
+        <svg class="legend-marker-color" width="16" height="16">
+          <circle cx="8" cy="8" r="7" stroke-width="1" stroke="#1f1f1f" fill="{{range.color}}" fill-opacity="{{if range.isChecked "1" "0"}}" stroke-opacity="1"></circle>
+        </svg>
 
         {{range.label}}
       </label>

@@ -1,32 +1,33 @@
 @import "bourbon",
         "neat";
 
-$brand: #97bf9f;
+$brand: rgba(#97bf9f, 0.95);
 $darken: 20%;
+$text: white;
 $brand-primary: $brand;
 $brand-secondary: darken($brand, $darken);
 $brand-border: 0 -2px 0 $brand-secondary;
 $shadow: 3px 3px 5px rgba(black, 0.15);
 $font: 'Lato', sans-serif;
-$padding: 0.35rem;
+$spacing: 0.35rem;
 $right-offset: 0.6rem;
 $medium: 'min-width: (#{rem(600)})';
 $large: 'min-width: (#{rem(1024)})';
 
 ::-webkit-input-placeholder {
-  color: white;
+  color: $text;
   opacity: 0.5;
 }
 :-moz-placeholder {
-  color: white;
+  color: $text;
   opacity: 0.5;
 }
 ::-moz-placeholder {
-  color: white;
+  color: $text;
   opacity: 0.5;
 }
 :-ms-input-placeholder {
-  color: white;
+  color: $text;
   opacity: 0.5;
 }
 
@@ -48,8 +49,29 @@ svg {
   margin: 0;
   padding: 0;
 }
-.toggler {
+.toggler,
+.hide {
   display: none;
+}
+
+%shadow {
+  background-color: $text;
+  border-radius: 4px;
+  box-shadow: 0 1px 5px rgba(black,.65);
+}
+
+.btn {
+  @extend %shadow;
+  display: inline-block;
+  background-color: $brand;
+  height: rem(35);
+  padding: rem(4);
+  width: rem(35);
+  z-index: 10;
+
+  svg {
+    fill: $text;
+  }
 }
 
 #map {
@@ -63,9 +85,15 @@ svg {
   z-index: 0;
 }
 
+#map .leaflet-bar a {
+  background-color: $brand;
+  color: $text;
+  border-bottom: none;
+}
+
 .close {
   display: inline-block;
-  fill: white;
+  fill: $text;
   height: 1.3rem;
   width: 1.3rem;
 }
@@ -80,15 +108,11 @@ svg {
   right: 0;
   text-align: center;
   top: 0;
-  transform:translate3d(0, rem(-350), 0);
-  visibility: hidden;
-  transition: transform 350ms ease, visibility 0s ease 350s;
+  display: none;
   z-index: 10;
 
   &.nav-on {
-    visibility: visible;
-    transform:translate3d(0, 0, 0);
-    transition: transform 350ms ease, visibility 0s ease 0s;
+    display: block;
   }
 }
 .nav-menu .close {
@@ -100,7 +124,7 @@ svg {
   margin-top: rem(16);
 }
 .nav-menu-item {
-  color: white;
+  color: $text;
   font-size: rem(20);
   padding: rem(14) 0;
 
@@ -110,7 +134,7 @@ svg {
 }
 .nav-icons {
   float: right;
-  padding: $padding ($padding + 0.25) $padding $padding;
+  padding: $spacing ($spacing + 0.25) $spacing $spacing;
   position: relative;
   text-align: right;
   z-index: 0;
@@ -123,11 +147,7 @@ svg {
   }
 }
 .nav-icon {
-  display: inline-block;
-  height: rem(45);
   position: relative;
-  width: rem(45);
-  z-index: 10;
 
   &:not(:last-child) {
     margin-right: 0.35rem;
@@ -135,11 +155,9 @@ svg {
 
   svg {
     display: inline-block;
-    fill: #fefefe;
-    height:100%;
+    height: 100%;
     padding: 0.25rem;
-    stroke: #111;
-    width:100%;
+    width: 100%;
   }
 
   a {
@@ -152,17 +170,15 @@ svg {
 .search {
   background-color: $brand;
   box-shadow: inset $brand-border;
-  display: block;
   position: absolute;
   top: 0;
-  transform: translate3d(0, -3.5rem, 0);
-  transition: transform 350ms ease;
+  display: none;
   width: 100%;
   z-index: 10;
 
   input {
     border: none;
-    color: white;
+    color: $text;
     line-height: rem(50);
     position: relative;
     text-indent: 0.6rem;
@@ -177,8 +193,7 @@ svg {
   }
 
   &.search-on {
-    transform: translate3d(0, 0, 0);
-    transition: transform 350ms ease;
+    display: block;
   }
 
   @media (#{$large}) {
@@ -215,7 +230,7 @@ svg {
   background-color: $brand;
   bottom: 0;
   box-shadow: 0 -2px 0 $brand-secondary;
-  color: white;
+  color: $text;
   left: 0;
   position: absolute;
   right: 0;
@@ -322,10 +337,6 @@ svg {
   }
 }
 
-.legend {
-  position: relative;
-}
-
 .streetview {
   height: 0;
   left: 0;
@@ -374,15 +385,64 @@ svg {
   }
 }
 
+.legend {
+  bottom: 0;
+  display: none;
+  background-color: $brand;
+  color: $text;
+  left: 0;
+  margin: 0 0 ($spacing + 0.25) ($spacing + 0.25);
+  max-width: 15rem;
+  padding: ($spacing + 0.25) $spacing $spacing;
+  position: absolute;
+  z-index: 11;
+
+  @media (#{$medium}) {
+    display: inline-block !important;
+  }
+
+  @media (#{$large}) {
+    max-width: inherit;
+  }
+
+  ul {
+    margin-top: rem(10);
+  }
+
+  li {
+    line-height: 1.4rem;
+  }
+
+  .close {
+    position: absolute;
+    right: $spacing + 0.25;
+    top: $spacing + 0.25;
+    fill: $text;
+
+    @media (#{$medium}) {
+      display: none;
+    }
+  }
+}
+
 .legend-label {
   cursor: pointer;
+}
+
+.legend-toggle {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin: 0 0 ($spacing + 0.25) ($spacing + 0.25);
 }
 
 .legend-icon {
   display: inline-block;
   width: rem(16);
+  fill: $text;
 }
 
-.hide {
-  display: none;
+.legend-is-toggled {
+  @extend %shadow;
+  display: inline-block !important;
 }

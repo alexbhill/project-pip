@@ -5,25 +5,31 @@ export default Ember.Service.extend({
     {
       name: 'small',
       query: '{{count}} <= 10',
-      color: '#30d18e',
+      color: '#e58f65',
       label: "< 10",
       isChecked: true
-    }, {
+    },
+
+    {
       name: 'medium',
       query: '{{count}} > 10 and {{count}} <= 50',
-      color: '#a6d130',
+      color: '#ff9f1c',
       label: "11 – 50",
       isChecked: true
-    }, {
+    },
+
+    {
       name: 'large',
       query: '{{count}} > 50 and {{count}} <= 100',
-      color: '#f7e43d',
+      color: '#d05353',
       label: "51 – 100",
       isChecked: true
-    }, {
+    },
+
+    {
       name: 'extra-large',
       query: '{{count}} > 100',
-      color: '#c9b220',
+      color: '#fb4b4e',
       label: "100 >",
       isChecked: true
     }
