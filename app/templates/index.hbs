@@ -27,7 +27,7 @@
 
   {{#map-legend ranges=ranges sublayers=sublayers legendIsToggled=legendIsToggled }}{{/map-legend}}
 
-  <a href="#" class="legend-toggle btn" {{ action "toggleLegend" preventDefault=true }}>
+  <a href="#" class="legend-toggle btn {{if legendIsToggled "hide" ""}}" {{ action "toggleLegend" preventDefault=true }}>
     <svg viewBox="0 0 16 16">
       <use xlink:href="#icon-compass"></use>
     </svg>

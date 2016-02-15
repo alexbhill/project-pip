@@ -29,7 +29,6 @@ module.exports = function(defaults) {
 
   app.import('bower_components/normalize.css/normalize.css');
   app.import('bower_components/cartodb.js/themes/css/cartodb.css');
-  app.import('bower_components/tabletop/src/tabletop.js');
   app.import('bower_components/cartodb.js/cartodb.js');
 
   // Use `app.import` to add additional libraries to the generated

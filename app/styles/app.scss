@@ -51,11 +51,11 @@ svg {
 }
 .toggler,
 .hide {
-  display: none;
+  display: none !important;
 }
 
 %shadow {
-  background-color: $text;
+  background-color: $brand;
   border-radius: 4px;
   box-shadow: 0 1px 5px rgba(black,.65);
 }
@@ -168,8 +168,7 @@ svg {
 }
 
 .search {
-  background-color: $brand;
-  box-shadow: inset $brand-border;
+  @extend %shadow;
   position: absolute;
   top: 0;
   display: none;
@@ -198,8 +197,7 @@ svg {
 
   @media (#{$large}) {
     position: relative;
-    transform: none;
-    transition: none;
+    display: block;
     margin: 1rem 0 0 1rem;
     max-width: 25rem;
     box-shadow: $shadow;
@@ -386,6 +384,7 @@ svg {
 }
 
 .legend {
+  @extend %shadow;
   bottom: 0;
   display: none;
   background-color: $brand;
@@ -397,12 +396,9 @@ svg {
   position: absolute;
   z-index: 11;
 
-  @media (#{$medium}) {
-    display: inline-block !important;
-  }
-
   @media (#{$large}) {
-    max-width: inherit;
+    max-width: rem(300);
+    padding-right: rem(40);
   }
 
   ul {
@@ -418,10 +414,6 @@ svg {
     right: $spacing + 0.25;
     top: $spacing + 0.25;
     fill: $text;
-
-    @media (#{$medium}) {
-      display: none;
-    }
   }
 }
 

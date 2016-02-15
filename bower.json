@@ -15,8 +15,7 @@
     "bourbon": "~4.2.3",
     "neat": "~1.7.2",
     "normalize.css": "~3.0.3",
-    "cartodb.js": "~3.15.8",
-    "tabletop": "~1.4.2"
+    "cartodb.js": "~3.15.8"
   },
   "devDependencies": {
     "ember": "2.0.0"
