@@ -1,32 +1,22 @@
 import Ember from 'ember';
 import ENV from 'property-praxis/config/environment';
+import _ from 'npm:lodash';
 
 export default Ember.Component.extend({
-  src: '',
-  alt: '',
+  src: null,
+  alt: null,
 
   classNames: ['streetview'],
   classNameBindings: ['isLoaded'],
   isLoaded: false,
 
-  /**
-   * coordinates stores the coordinates of the
-   * current active property
-   */
-  coordinates: [],
+  setSrc: Ember.observer('active', function () {
+    let active = this.get('active');
 
-  /**
-   * setSrc observes coordinates and sets src on change
-   */
-  setSrc: Ember.observer('coordinates', function () {
-    let coordinates = this.get('coordinates');
-
-    if (coordinates) {
-      coordinates = coordinates.join(','); // convert coordinates array to string
-      this.set('src', `https://maps.googleapis.com/maps/api/streetview?size=640x640&pitch=0&location=${coordinates}&pitch=10&key=${ENV.STREETVIEW_KEY}`);
+    if (_.get(active, 'lat') && _.get(active, 'long')) {
+      this.set('src', streetviewUrl([active.lat, active.long]));
     } else {
-      // if coordinates is empty reset src to empty string
-      this.set('src', '');
+      this.set('src', null);
     }
   }),
 
@@ -35,10 +25,15 @@ export default Ember.Component.extend({
    * listen once for a load event on the image and
    * toggle isLoaded
    */
-  handleLoad: Ember.observer('coordinates', function() {
+  handleLoad: Ember.observer('active', function() {
     this.set('isLoaded', false); // re-init isLoaded to false on change
+
     this.$().children('img').one('load', () => {
       this.set('isLoaded', true);
     });
   })
 });
+
+function streetviewUrl (coordinates) {
+  return `https://maps.googleapis.com/maps/api/streetview?size=640x640&pitch=0&location=${coordinates.join(',')}&pitch=10&key=${ENV.STREETVIEW_KEY}`;
+}

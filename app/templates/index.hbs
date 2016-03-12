@@ -4,7 +4,7 @@
 </div>
 
 <div class="page">
-  {{#map-container sql=sql search=search activeProperty=activeProperty ranges=ranges sublayers=sublayers}}{{/map-container}}
+  {{#map-container search=search active=active layers=layers model=model}}{{/map-container}}
 
   <nav class="nav nav-icons">
     <a class="nav-icon nav-icon-search btn" tabindex="0" {{ action "toggleSearch" preventDefault=true}} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-search"></use></svg></a>
@@ -13,19 +13,19 @@
   <section class="panel panel-on">
     <a tabindex="0" class="close" {{ action "clearSearch" on="click" preventDefault=true }} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-close"></use></svg></a>
 
-    {{#if activeProperty.properties}}
-      {{#property-details activeProperty=activeProperty}}{{/property-details}}
+    {{#if active.cartodb_id}}
+      {{#property-details active=active}}{{/property-details}}
     {{/if}}
 
-    {{#unless activeProperty.properties}}
-      {{#property-list properties=properties activeProperty=activeProperty}}{{/property-list}}
+    {{#unless active.cartodb_id}}
+      {{#property-list results=results active=active}}{{/property-list}}
     {{/unless}}
   </section>
 
-  {{#streetview-loader coordinates=activeProperty.geometry.coordinates alt=activeProperty.properties.propaddr}}
+  {{#streetview-loader active=active}}
   {{/streetview-loader}}
 
-  {{#map-legend ranges=ranges sublayers=sublayers legendIsToggled=legendIsToggled }}{{/map-legend}}
+  {{#map-legend legendIsToggled=legendIsToggled }}{{/map-legend}}
 
   <a href="#" class="legend-toggle btn {{if legendIsToggled "hide" ""}}" {{ action "toggleLegend" preventDefault=true }}>
     <svg viewBox="0 0 16 16">

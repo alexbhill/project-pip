@@ -246,6 +246,7 @@ svg {
   &.panel-on {
     transform: translate3d(0, 0, 0);
     transition: transform 150ms ease;
+    z-index: 11;
   }
 
   @media (#{$large}) {
@@ -256,6 +257,7 @@ svg {
     transform: none;
     transition: none;
     box-shadow: $brand-border, $shadow;
+    z-index: 2;
 
     .close {
       top: rem(-37)

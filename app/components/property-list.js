@@ -10,8 +10,8 @@ export default Ember.Component.extend({
   tagName: 'ul',
 
   actions: {
-    setProperty(property) {
-      this.set('activeProperty', property);
+    setActive(property) {
+      this.set('active', property);
     }
   }
 });
