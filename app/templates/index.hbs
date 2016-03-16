@@ -1,3 +1,5 @@
+{{#loader-ux isLoading=isLoading}}{{/loader-ux}}
+
 <div class="search {{ if searchIsToggled 'search-on' }}" >
   {{input type="search" value=search placeholder="Search by address or street name…" autofocus="autofocus"}}
   <a tabindex="0" class="close" {{ action "toggleSearch" preventDefault=true}} {{ action "clearSearch" on="click" }} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-close"></use></svg></a>

@@ -11,12 +11,18 @@ export default Ember.Controller.extend({
   sql: Ember.computed.reads('sqlService.sql'),
 
   layerObserver: Ember.observer('layers.@each.visible', function () {
-    let sql = this.get('sql'),
+    let controller = this,
+      sql = this.get('sql'),
       layers = this.get('layers').filterBy('visible'),
       filters = _.size(layers) ? layers.mapBy('sql').reduce(queryReduce()) : '',
       query = this.get('sqlService').default + '\n' + filters;
 
-    sql.execute(query).done(data => this.set('model', data.rows));
+    controller.set('isLoading', true);
+
+    sql.execute(query).done(function (data) {
+      controller.set('model', data.rows);
+      controller.set('isLoading', false);
+    });
   }).on('init'),
 
   searchObserver: Ember.observer('search', function () {
