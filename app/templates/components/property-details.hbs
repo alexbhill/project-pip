@@ -1,2 +1,2 @@
-<p>{{ format-detail active.propaddr }}</p>
-<p>{{ format-detail active.ownername1 }}</p>
+<p class="property-owner" {{action "setActiveOwner" activeProperty}}>{{format-detail name}} <svg><use xlink:href="#icon-info"></use></svg></p>
+<p>{{format-detail address}}</p>

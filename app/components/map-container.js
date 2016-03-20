@@ -16,17 +16,53 @@ export default Ember.Component.extend({
 
   layersObserver: Ember.observer('layers.@each.visible', function () {
     let layers = this.get('layers'),
-      sublayers = this.get('layer').getSubLayers();
+      sublayers = this.get('viz').getSubLayers();
 
     _.each(layers, toggleLayers(sublayers));
   }),
 
-  activeObserver: Ember.observer('active.cartodb_id', function () {
+  activeObserver: Ember.observer('activeProperty.cartodb_id', function () {
     let map = this.get('map'),
-      active = this.get('active');
+      active = this.get('activeProperty');
 
     if (active) {
       map.panTo([active.lat, active.long], { animate: true });
+    }
+  }),
+
+  ownerObserver: Ember.observer('activeOwner.cartodb_id', function () {
+    let owner = this.get('activeOwner'),
+      layer = this.get('viz'),
+      map = this.get('map'),
+      layers = this.get('layers'),
+      service = this.get('sqlService'),
+      sql = service.sqlQueryByOwner(owner),
+      styles = this.get('styleService').default,
+      sublayers = layer.getSubLayers(),
+      index = _.findLastIndex(sublayers),
+      toUnsetOwnerLayer = !_.has(owner, 'cartodb_id') && _.size(sublayers) > _.size(layers);
+
+    if (_.has(owner, 'cartodb_id')) {
+      _.each(sublayers, sublayer => sublayer.hide());
+
+      layer.createSubLayer({
+        sql: sql,
+        cartocss: styles,
+        interactivity: 'cartodb_id'
+      });
+
+      layer.getSubLayer(index).setInteraction(true);
+      layer.getSubLayer(index).on('featureClick', featureClick(this));
+
+      service.sql.getBounds(sql).done(function (bounds) {
+        map.fitBounds(bounds);
+      });
+    }
+
+    if (toUnsetOwnerLayer) {
+      _.last(layer.getSubLayers()).remove();
+      _.each(layers, toggleLayers(sublayers));
+      map.setView(this.get('center'), 14);
     }
   }),
 
@@ -53,10 +89,10 @@ export default Ember.Component.extend({
 
     cartodb.createLayer(map, layerSource)
       .addTo(map)
-      .on('done', function (layer) {
+      .done(function (layer) {
         _.each(layer.getSubLayers(), addInteractive(controller));
 
-        controller.set('layer', layer);
+        controller.set('viz', layer);
       });
 
     this.set('map', map);
@@ -89,11 +125,15 @@ function addInteractive(controller) {
   return function (sublayer) {
     sublayer.setInteraction(true);
 
-    sublayer.on('featureClick', function (event, latlng, pos, data) {
-      let model = controller.get('model'),
-        active = model.findBy('cartodb_id', data.cartodb_id);
+    sublayer.on('featureClick', featureClick(controller));
+  };
+}
 
-      controller.set('active', active);
-    });
+function featureClick(controller) {
+  return function (event, latlng, pos, data) {
+    let model = controller.get('model'),
+      active = model.findBy('cartodb_id', data.cartodb_id);
+
+    controller.set('activeProperty', active);
   };
 }

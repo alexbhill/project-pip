@@ -31,7 +31,8 @@ export default Ember.Controller.extend({
       results = [];
 
     this.set('results', null);
-    this.set('active', null);
+    this.set('activeProperty', null);
+    this.set('activeOwner', null);
 
     if (_.size(search)) {
       search = search.toUpperCase();
@@ -40,12 +41,31 @@ export default Ember.Controller.extend({
     }
   }),
 
+  ownerObserver: Ember.observer('activeOwner', function () {
+    let controller = this,
+      sql = controller.get('sql'),
+      owner = controller.get('activeOwner'),
+      query = controller.get('sqlService').sqlQueryByOwner;
+
+    if (owner && !_.isEmpty(owner)) {
+      controller.set('activeProperty', null);
+      controller.set('isLoading', true);
+
+      sql.execute(query(owner))
+        .done(function (data) {
+          controller.set('results', data.rows);
+          controller.set('isLoading', false);
+        });
+    }
+  }),
+
   actions: {
     clearSearch() {
       this.set('search', null);
       this.set('results', null);
-      this.set('active', null);
+      this.set('activeProperty', null);
       this.set('geometry', null);
+      this.set('activeOwner', null);
     },
 
     toggleSearch() {
@@ -68,7 +88,7 @@ function queryReduce () {
 
 function searchMatches(search) {
   return function (property) {
-    return _.startsWith(property.ownername1.toUpperCase(), search) ||
-           _.startsWith(property.propaddr.toUpperCase(), search);
+    return _.includes(property.ownername1.toUpperCase(), search) ||
+           _.includes(property.propaddr.toUpperCase(), search);
   };
 }

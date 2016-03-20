@@ -1,6 +1,6 @@
-{{#each results as |property|}}
-  <li class="property" {{action "setActive" property}} itemscope itemtype="http://schema.org/Property">
-    <p itemscope itemtype="http://schema.org/PostalAddress"><span itemprop="streetAddress">{{ format-detail property.propaddr }}</span></p>
-    <p itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{ format-detail property.ownername1 }}</span></p>
+{{#each results as |property index|}}
+  <li class="property" {{action "setActiveProperty" property}} itemscope itemtype="http://schema.org/Property">
+    <p itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{array names index}}</span></p>
+    <p itemscope itemtype="http://schema.org/PostalAddress"><span itemprop="streetAddress">{{array addresses index}}</span></p>
   </li>
 {{/each}}

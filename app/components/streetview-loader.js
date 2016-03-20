@@ -10,8 +10,8 @@ export default Ember.Component.extend({
   classNameBindings: ['isLoaded'],
   isLoaded: false,
 
-  setSrc: Ember.observer('active', function () {
-    let active = this.get('active');
+  setSrc: Ember.observer('activeProperty', function () {
+    let active = this.get('activeProperty');
 
     if (_.get(active, 'lat') && _.get(active, 'long')) {
       this.set('src', streetviewUrl([active.lat, active.long]));
@@ -25,7 +25,7 @@ export default Ember.Component.extend({
    * listen once for a load event on the image and
    * toggle isLoaded
    */
-  handleLoad: Ember.observer('active', function() {
+  handleLoad: Ember.observer('activeProperty', function() {
     this.set('isLoaded', false); // re-init isLoaded to false on change
 
     this.$().children('img').one('load', () => {

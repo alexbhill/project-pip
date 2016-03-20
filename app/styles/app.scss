@@ -6,8 +6,8 @@ $darken: 20%;
 $text: white;
 $brand-primary: $brand;
 $brand-secondary: darken($brand, $darken);
-$brand-border: 0 -2px 0 $brand-secondary;
-$shadow: 3px 3px 5px rgba(black, 0.15);
+$brand-border: 0 rem(-2) 0 $brand-secondary;
+$shadow: rem(3) rem(3) rem(5) rgba(black, 0.15);
 $font: 'Lato', sans-serif;
 $spacing: 0.35rem;
 $right-offset: 0.6rem;
@@ -40,9 +40,12 @@ body {
   background-color: $brand;
   font-family: $font;
   font-size: rem(16);
+  overflow-y: hidden;
 }
 svg {
   pointer-events: none;
+  width: 100%;
+  height: 100%;
 }
 [class*="-list"] {
   list-style-type: none;
@@ -56,8 +59,8 @@ svg {
 
 %shadow {
   background-color: $brand;
-  border-radius: 4px;
-  box-shadow: 0 1px 5px rgba(black,.65);
+  border-radius: rem(4);
+  box-shadow: 0 rem(1) rem(5) rgba(black,.65);
 }
 
 .btn {
@@ -129,7 +132,7 @@ svg {
   padding: rem(14) 0;
 
   &:not(:last-child) {
-    box-shadow: 0 2px 0 $brand-secondary;
+    box-shadow: 0 rem(2) 0 $brand-secondary;
   }
 }
 .nav-icons {
@@ -227,7 +230,7 @@ svg {
   -webkit-overflow-scrolling: touch;
   background-color: $brand;
   bottom: 0;
-  box-shadow: 0 -2px 0 $brand-secondary;
+  box-shadow: 0 rem(-2) 0 $brand-secondary;
   color: $text;
   left: 0;
   position: absolute;
@@ -264,15 +267,33 @@ svg {
     }
   }
 }
-.panel-item {
-  // display: none;
-}
 
+.owner {
+  box-shadow: 0 rem(2) 0 $brand-secondary;
+
+  address p {
+    margin: 0;
+  }
+}
+.property-owner {
+  cursor: pointer;
+}
+.property svg {
+  fill: $text;
+  width: 1rem;
+  height: 1rem;
+  display: inline-block;
+  margin-right: 0.2rem;
+  position: relative;
+  top: rem(2);
+}
+.owner,
 .property {
   // display: block;
   padding: 1rem;
   position: relative;
 }
+.owner p,
 .property p {
   margin-top: 0;
   margin-bottom: rem(10);
@@ -315,6 +336,10 @@ svg {
     }
   }
 }
+address {
+  font-style: normal;
+}
+
 .panel-on:not(.active-property) .properties-list {
   display: block;
   max-height: rem(150);
@@ -418,7 +443,10 @@ svg {
     fill: $text;
   }
 }
-
+.legend-marker-color {
+  width: auto;
+  height: auto;
+}
 .legend-label {
   cursor: pointer;
 }

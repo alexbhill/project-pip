@@ -2,36 +2,37 @@
 
 <div class="search {{ if searchIsToggled 'search-on' }}" >
   {{input type="search" value=search placeholder="Search by address or street name…" autofocus="autofocus"}}
-  <a tabindex="0" class="close" {{ action "toggleSearch" preventDefault=true}} {{ action "clearSearch" on="click" }} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-close"></use></svg></a>
+  <a tabindex="0" class="close" {{ action "toggleSearch" preventDefault=true}} {{ action "clearSearch" on="click" }} href="#"><svg><use xlink:href="#icon-close"></use></svg></a>
 </div>
 
 <div class="page">
-  {{#map-container search=search active=active layers=layers model=model}}{{/map-container}}
+  {{#map-container search=search activeProperty=activeProperty activeOwner=activeOwner layers=layers model=model}}{{/map-container}}
 
   <nav class="nav nav-icons">
-    <a class="nav-icon nav-icon-search btn" tabindex="0" {{ action "toggleSearch" preventDefault=true}} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-search"></use></svg></a>
+    <a class="nav-icon nav-icon-search btn" tabindex="0" {{ action "toggleSearch" preventDefault=true}} href="#"><svg><use xlink:href="#icon-search"></use></svg></a>
   </nav>
 
-  <section class="panel panel-on">
-    <a tabindex="0" class="close" {{ action "clearSearch" on="click" preventDefault=true }} href="#"><svg viewBox="0 0 32 32"><use xlink:href="#icon-close"></use></svg></a>
-
-    {{#if active.cartodb_id}}
-      {{#property-details active=active}}{{/property-details}}
+  <div class="panel panel-on">
+    <a tabindex="0" class="close" {{ action "clearSearch" on="click" preventDefault=true }} href="#"><svg><use xlink:href="#icon-close"></use></svg></a>
+    {{#if activeOwner.cartodb_id}}
+      {{#owner-details activeOwner=activeOwner count=results.length}}{{/owner-details}}
     {{/if}}
 
-    {{#unless active.cartodb_id}}
-      {{#property-list results=results active=active}}{{/property-list}}
-    {{/unless}}
-  </section>
+    {{#if activeProperty.cartodb_id}}
+      {{#property-details activeProperty=activeProperty activeOwner=activeOwner}}{{/property-details}}
+    {{/if}}
 
-  {{#streetview-loader active=active}}
+    {{#unless activeProperty.cartodb_id}}
+      {{#property-list results=results activeProperty=activeProperty}}{{/property-list}}
+    {{/unless}}
+  </div>
+
+  {{#streetview-loader activeProperty=activeProperty}}
   {{/streetview-loader}}
 
   {{#map-legend legendIsToggled=legendIsToggled }}{{/map-legend}}
 
   <a href="#" class="legend-toggle btn {{if legendIsToggled "hide" ""}}" {{ action "toggleLegend" preventDefault=true }}>
-    <svg viewBox="0 0 16 16">
-      <use xlink:href="#icon-compass"></use>
-    </svg>
+    <svg><use xlink:href="#icon-compass"></use></svg>
   </a>
 </div>
