@@ -49,9 +49,29 @@ export default Ember.Controller.extend({
 
     if (owner && !_.isEmpty(owner)) {
       controller.set('activeProperty', null);
+      controller.set('activeZip', null);
       controller.set('isLoading', true);
 
       sql.execute(query(owner))
+        .done(function (data) {
+          controller.set('results', data.rows);
+          controller.set('isLoading', false);
+        });
+    }
+  }),
+
+  zipObserver: Ember.observer('activeZip', function () {
+    let controller = this,
+      sql = controller.get('sql')  ,
+      zip = controller.get('activeZip'),
+      query = controller.get('sqlService').sqlQueryByZip;
+
+    if (zip && !_.isEmpty(zip)) {
+      controller.set('activeProperty', null);
+      controller.set('activeOwner', null);
+      controller.set('isLoading', true);
+
+      sql.execute(query(zip))
         .done(function (data) {
           controller.set('results', data.rows);
           controller.set('isLoading', false);
@@ -64,8 +84,9 @@ export default Ember.Controller.extend({
       this.set('search', null);
       this.set('results', null);
       this.set('activeProperty', null);
-      this.set('geometry', null);
       this.set('activeOwner', null);
+      this.set('activeZip', null);
+      this.set('geometry', null);
     },
 
     toggleSearch() {

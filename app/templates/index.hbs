@@ -1,4 +1,6 @@
-{{#loader-ux isLoading=isLoading}}{{/loader-ux}}
+{{#loader-ux
+  isLoading=isLoading}}
+{{/loader-ux}}
 
 <div class="search {{ if searchIsToggled 'search-on' }}" >
   {{input type="search" value=search placeholder="Search by address or street name…" autofocus="autofocus"}}
@@ -6,7 +8,8 @@
 </div>
 
 <div class="page">
-  {{#map-container search=search activeProperty=activeProperty activeOwner=activeOwner layers=layers model=model}}{{/map-container}}
+  {{#map-container search=search activeProperty=activeProperty activeOwner=activeOwner activeZip=activeZip layers=layers model=model}}
+  {{/map-container}}
 
   <nav class="nav nav-icons">
     <a class="nav-icon nav-icon-search btn" tabindex="0" {{ action "toggleSearch" preventDefault=true}} href="#"><svg><use xlink:href="#icon-search"></use></svg></a>
@@ -15,22 +18,33 @@
   <div class="panel panel-on">
     <a tabindex="0" class="close" {{ action "clearSearch" on="click" preventDefault=true }} href="#"><svg><use xlink:href="#icon-close"></use></svg></a>
     {{#if activeOwner.cartodb_id}}
-      {{#owner-details activeOwner=activeOwner count=results.length}}{{/owner-details}}
+      {{#owner-details activeOwner=activeOwner count=results.length}}
+      {{/owner-details}}
+    {{/if}}
+
+    {{#if activeZip.cartodb_id}}
+      {{#zip-details activeZip=activeZip count=results.length}}
+      {{/zip-details}}
     {{/if}}
 
     {{#if activeProperty.cartodb_id}}
-      {{#property-details activeProperty=activeProperty activeOwner=activeOwner}}{{/property-details}}
+      {{#property-details activeProperty=activeProperty activeOwner=activeOwner activeZip=activeZip}}
+      {{/property-details}}
     {{/if}}
 
     {{#unless activeProperty.cartodb_id}}
-      {{#property-list results=results activeProperty=activeProperty}}{{/property-list}}
+      {{#property-list results=results activeProperty=activeProperty}}
+      {{/property-list}}
     {{/unless}}
   </div>
 
-  {{#streetview-loader activeProperty=activeProperty}}
+  {{#streetview-loader
+    activeProperty=activeProperty}}
   {{/streetview-loader}}
 
-  {{#map-legend legendIsToggled=legendIsToggled }}{{/map-legend}}
+  {{#map-legend
+    legendIsToggled=legendIsToggled}}
+  {{/map-legend}}
 
   <a href="#" class="legend-toggle btn {{if legendIsToggled "hide" ""}}" {{ action "toggleLegend" preventDefault=true }}>
     <svg><use xlink:href="#icon-compass"></use></svg>

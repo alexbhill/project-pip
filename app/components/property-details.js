@@ -24,9 +24,20 @@ export default Ember.Component.extend({
     return getName(property);
   }),
 
+  zip: Ember.computed('property', function () {
+    let getZip = this.get('propertyService').getZip,
+      property = this.get('activeProperty');
+
+    return getZip(property);
+  }),
+
   actions: {
     setActiveOwner(property) {
       this.set('activeOwner', property);
+    },
+
+    setActiveZip(property) {
+      this.set('activeZip', property);
     }
   }
 });

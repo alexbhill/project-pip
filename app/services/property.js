@@ -14,6 +14,10 @@ export default Ember.Service.extend({
     return _.get(data, 'propaddr');
   },
 
+  getZip: function (data) {
+    return _.get(data, 'propzip');
+  },
+
   getLat: function (data) {
     return _.get(data, 'lat');
   },

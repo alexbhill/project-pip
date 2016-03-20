@@ -35,7 +35,7 @@ export default Ember.Component.extend({
 
   zip: Ember.computed('activeOwner', function () {
     let active = this.get('activeOwner'),
-      getZip = this.get('propertyService').getOwnerState;
+      getZip = this.get('propertyService').getOwnerZip;
 
     return getZip(active);
   })

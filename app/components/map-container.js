@@ -66,6 +66,42 @@ export default Ember.Component.extend({
     }
   }),
 
+  zipObserver: Ember.observer('activeZip.cartodb_id', function () {
+    let zip = this.get('activeZip'),
+      layer = this.get('viz'),
+      map = this.get('map'),
+      layers = this.get('layers'),
+      service = this.get('sqlService'),
+      sql = service.sqlQueryByZip(zip),
+      styles = this.get('styleService').default,
+      sublayers = layer.getSubLayers(),
+      index = _.findLastIndex(sublayers),
+      toUnsetZipLayer = !_.has(zip, 'cartodb_id') && _.size(sublayers) > _.size(layers);
+
+    if (_.has(zip, 'cartodb_id')) {
+      _.each(sublayers, sublayer => sublayer.hide());
+
+      layer.createSubLayer({
+        sql: sql,
+        cartocss: styles,
+        interactivity: 'cartodb_id'
+      });
+
+      layer.getSubLayer(index).setInteraction(true);
+      layer.getSubLayer(index).on('featureClick', featureClick(this));
+
+      service.sql.getBounds(sql).done(function (bounds) {
+        map.fitBounds(bounds);
+      });
+    }
+
+    if (toUnsetZipLayer) {
+      _.last(layer.getSubLayers()).remove();
+      _.each(layers, toggleLayers(sublayers));
+      map.setView(this.get('center'), 14);
+    }
+  }),
+
   didInsertElement() {
     let controller = this,
       map = new L.Map('map', { zoomControl: false }).setView(controller.get('center'), 14),
