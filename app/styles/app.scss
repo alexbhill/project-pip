@@ -40,6 +40,9 @@ body {
   background-color: $brand;
   font-family: $font;
   font-size: rem(16);
+}
+
+body{
   overflow-y: hidden;
 }
 svg {
