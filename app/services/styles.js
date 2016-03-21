@@ -10,6 +10,5 @@ export default Ember.Service.extend({
     '\tmarker-type: ellipse;\n' +
     '\tmarker-width: 14.5;\n' +
     '\tmarker-allow-overlap: true;\n' +
-    '\tmarker-fill: #ff5714\n' +
   '}',
 });

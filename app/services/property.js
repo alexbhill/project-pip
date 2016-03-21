@@ -7,7 +7,7 @@ export default Ember.Service.extend({
   },
 
   getName: function (data) {
-    return _.get(data, 'ownername1') || _.get(data, 'ownername2');
+    return _.get(data, 'ownername1');
   },
 
   getAddress: function (data) {
