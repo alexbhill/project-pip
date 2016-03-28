@@ -19,11 +19,11 @@ export default Ember.Service.extend({
   },
 
   getLat: function (data) {
-    return _.get(data, 'lat');
+    return _.get(data, 'x');
   },
 
   getLong: function (data) {
-    return _.get(data, 'long');
+    return _.get(data, 'y');
   },
 
   getOwnerStreet: function (data) {

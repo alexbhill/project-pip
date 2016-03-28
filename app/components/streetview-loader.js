@@ -11,10 +11,11 @@ export default Ember.Component.extend({
   isLoaded: false,
 
   setSrc: Ember.observer('activeProperty', function () {
-    let active = this.get('activeProperty');
+    let active = this.get('activeProperty'),
+      hasCoords = _.get(active, 'y') && _.get(active, 'x');
 
-    if (_.get(active, 'lat') && _.get(active, 'long')) {
-      this.set('src', streetviewUrl([active.lat, active.long]));
+    if (hasCoords) {
+      this.set('src', streetviewUrl([active.y, active.x]));
     } else {
       this.set('src', null);
     }

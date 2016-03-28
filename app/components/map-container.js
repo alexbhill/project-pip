@@ -26,80 +26,16 @@ export default Ember.Component.extend({
       active = this.get('activeProperty');
 
     if (active) {
-      map.panTo([active.lat, active.long], { animate: true });
+      map.panTo([active.y, active.x], { animate: true });
     }
   }),
 
   ownerObserver: Ember.observer('activeOwner.cartodb_id', function () {
-    let owner = this.get('activeOwner'),
-      layer = this.get('viz'),
-      map = this.get('map'),
-      layers = this.get('layers'),
-      service = this.get('sqlService'),
-      sql = service.sqlQueryByOwner(owner),
-      styles = this.get('styleService').default,
-      sublayers = layer.getSubLayers(),
-      index = _.findLastIndex(sublayers),
-      toUnsetOwnerLayer = !_.has(owner, 'cartodb_id') && _.size(sublayers) > _.size(layers);
-
-    if (_.has(owner, 'cartodb_id')) {
-      _.each(sublayers, sublayer => sublayer.hide());
-
-      layer.createSubLayer({
-        sql: sql,
-        cartocss: styles,
-        interactivity: 'cartodb_id'
-      });
-
-      layer.getSubLayer(index).setInteraction(true);
-      layer.getSubLayer(index).on('featureClick', featureClick(this));
-
-      service.sql.getBounds(sql).done(function (bounds) {
-        map.fitBounds(bounds);
-      });
-    }
-
-    if (toUnsetOwnerLayer) {
-      _.last(layer.getSubLayers()).remove();
-      _.each(layers, toggleLayers(sublayers));
-      map.setView(this.get('center'), 14);
-    }
+    observerLayerHandler(this, 'activeOwner');
   }),
 
   zipObserver: Ember.observer('activeZip.cartodb_id', function () {
-    let zip = this.get('activeZip'),
-      layer = this.get('viz'),
-      map = this.get('map'),
-      layers = this.get('layers'),
-      service = this.get('sqlService'),
-      sql = service.sqlQueryByZip(zip),
-      styles = this.get('styleService').default,
-      sublayers = layer.getSubLayers(),
-      index = _.findLastIndex(sublayers),
-      toUnsetZipLayer = !_.has(zip, 'cartodb_id') && _.size(sublayers) > _.size(layers);
-
-    if (_.has(zip, 'cartodb_id')) {
-      _.each(sublayers, sublayer => sublayer.hide());
-
-      layer.createSubLayer({
-        sql: sql,
-        cartocss: styles,
-        interactivity: 'cartodb_id'
-      });
-
-      layer.getSubLayer(index).setInteraction(true);
-      layer.getSubLayer(index).on('featureClick', featureClick(this));
-
-      service.sql.getBounds(sql).done(function (bounds) {
-        map.fitBounds(bounds);
-      });
-    }
-
-    if (toUnsetZipLayer) {
-      _.last(layer.getSubLayers()).remove();
-      _.each(layers, toggleLayers(sublayers));
-      map.setView(this.get('center'), 14);
-    }
+    observerLayerHandler(this, 'activeZip');
   }),
 
   didInsertElement() {
@@ -127,7 +63,6 @@ export default Ember.Component.extend({
       .addTo(map)
       .done(function (layer) {
         _.each(layer.getSubLayers(), addInteractive(controller));
-
         controller.set('viz', layer);
       });
 
@@ -151,7 +86,7 @@ function mapLayers(sql, styles) {
   return function (layer) {
     return {
       sql: sql + '\n' + layer.sql,
-      cartocss: styles + '\n#properties {\n\tmarker-fill:' + layer.color + '; }',
+      cartocss: styles,
       interactivity: 'cartodb_id'
     };
   };
@@ -172,4 +107,38 @@ function featureClick(controller) {
 
     controller.set('activeProperty', active);
   };
+}
+
+function observerLayerHandler(controller, observeProperty) {
+  let active = controller.get(observeProperty),
+    layer = controller.get('viz'),
+    layers = controller.get('layers'),
+    service = controller.get('sqlService'),
+    styles = controller.get('styleService').default,
+    sublayers = layer.getSubLayers(),
+    toUnsetActiveLayer = !_.has(active, 'cartodb_id') && _.size(sublayers) > _.size(layers),
+    sql = _.includes(observeProperty, 'Zip')
+          ? service.sqlQueryByZip(active)
+          : service.sqlQueryByOwner(active),
+    index;
+
+  if (_.has(active, 'cartodb_id')) {
+    _.each(sublayers, sublayer => sublayer.hide());
+
+    layer.createSubLayer({
+      sql: sql,
+      cartocss: styles,
+      interactivity: 'cartodb_id'
+    });
+
+    index = _.findLastIndex(layer.getSubLayers());
+
+    layer.getSubLayer(index).setInteraction(true);
+    layer.getSubLayer(index).on('featureClick', featureClick(controller));
+  }
+
+  if (toUnsetActiveLayer) {
+    _.last(layer.getSubLayers()).remove();
+    _.each(layers, toggleLayers(sublayers));
+  }
 }
