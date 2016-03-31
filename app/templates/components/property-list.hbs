@@ -1,6 +1,6 @@
 {{#each results as |property|}}
   <li class="property" {{action "setActiveProperty" property}} itemscope itemtype="http://schema.org/Property">
-    <p itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{property.owner}}</span></p>
-    <p itemscope itemtype="http://schema.org/PostalAddress"><span itemprop="streetAddress">{{property.address}}</span></p>
+    <p itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{format-details property.owner}}</span></p>
+    <p itemscope itemtype="http://schema.org/PostalAddress"><span itemprop="streetAddress">{{format-details property.address}}</span></p>
   </li>
 {{/each}}

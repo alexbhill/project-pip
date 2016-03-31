@@ -1,3 +1,10 @@
+/**
+ * index.js
+ * controller for the index route
+ * manages chagnes to our model based on
+ * user interaction
+ */
+
 import Ember from 'ember';
 import _ from 'npm:lodash';
 
@@ -5,44 +12,67 @@ export default Ember.Controller.extend({
   legendIsToggled: false,
   searchIsToggled: false,
 
+  // array of layer data
   layerService: Ember.inject.service('layers'),
   layers: Ember.computed.reads('layerService.layers'),
+
+  // our carto sql instance
   sqlService: Ember.inject.service('sql'),
   sql: Ember.computed.reads('sqlService.sql'),
 
+  /**
+   * change the data available in our model
+   * based on visibility of layers
+   * @observes layers.@each.visible
+   */
   layerObserver: Ember.observer('layers.@each.visible', function () {
-    let layers = this.get('layers').filterBy('visible').mapBy('id'),
+    let layers = this.get('layers').filterBy('visible').mapBy('id'), // e.g. [0, 2, 4]
       model = this.store.peekAll('property').filter(item => _.includes(layers, item.get('layer')));
 
+    // set our new model
     this.set('model', model);
   }).on('init'),
 
+  /**
+   * set results based on search
+   * matches either property.address or property.owner
+   * @observes search
+   */
   searchObserver: Ember.observer('search', function () {
-    let search = this.get('search'),
+    const search = this.get('search'),
       model = this.get('model'),
-      results = [];
+      max = 10; // number of results to return
 
-    this.set('results', null);
-    this.set('activeProperty', null);
+    let results = [];
 
     if (_.size(search)) {
-      search = search.toUpperCase();
-      results = _.take(model.filter(searchMatches(search)), 10);
-      this.set('results', results);
+      // filter the model by calling #searchMatches
+      results = _.take(model.filter(searchMatches(search)), max);
     }
+
+    this.set('results', results);
   }),
 
-  ownerObserver: Ember.observer('activeOwner', observerHandler),
-  zipObserver: Ember.observer('activeZip', observerHandler),
+  propertyObserver: Ember.observer('activeProperty', propertyHandler),
+
+  /**
+   * observe changes to activeOwner by calling observerHandler
+   * @observes activeOwner
+   */
+  ownerObserver: Ember.observer('activeOwner', ownerObserverHandler),
+
+  /**
+   * observe changes to activeZip by calling observerHandler
+   * @observes activeZip
+   */
+  zipObserver: Ember.observer('activeZip', zipObserverHandler),
 
   actions: {
     clear() {
       this.set('search', null);
-      this.set('results', null);
       this.set('activeProperty', null);
-      this.set('activeOwner', null);
       this.set('activeZip', null);
-      this.set('geometry', null);
+      this.set('activeOwner', null);
     },
 
     toggleSearch() {
@@ -55,30 +85,58 @@ export default Ember.Controller.extend({
   }
 });
 
+/**
+ * match current search value to property's
+ * address or owner properties
+ * @param {String} search - current search value
+ * @return {callback} returns a boolean based on match
+ */
 function searchMatches(search) {
+  search = search.toUpperCase();
+
   return function (property) {
-    return _.includes(property.get('owner').toUpperCase(), search);
+    return _.includes(property.get('owner').toUpperCase(), search) || _.includes(property.get('address').toUpperCase(), search);
   };
 }
 
-function observerHandler(controller, key) {
-  const active = controller.get(key),
-
-    keys = {
-      activeZip: 'zip',
-      activeOwner: 'owner',
-    },
-
-    toggle = {
-      activeZip: 'activeOwner',
-      activeOwner: 'activeZip'
-    },
-
-    results = active && controller.get('model').filterBy(keys[key], active.get(keys[key]));
-
-  if (active && !_.isEmpty(active)) {
-    controller.set('activeProperty', null);
-    controller.set(toggle[key], null);
-    controller.set('results', results);
+function propertyHandler(controller, key) {
+  if (controller.get(key)) {
+    // turn off owner & zip when single property is active
+    controller.set('activeOwner', null);
+    controller.set('activeZip', null);
   }
+}
+
+function ownerObserverHandler(controller, key) {
+  const active = controller.get(key),
+    max = 10; // maximum # of results to return
+
+  let results = [];
+
+  if (active) {
+    results = controller.get('model').filterBy('owner', active.get('owner'));
+    controller.set('activeProperty', null); // turn off active property
+  }
+
+  controller.set('results', _.take(results, max));
+}
+
+/**
+ * returns results based on changes to activeZip
+ * or activeOwner
+ * @param {controller} Ember Controller
+ * @param {key} the key being observed
+ */
+function zipObserverHandler(controller, key) {
+  const active = controller.get(key),
+    max = 10; // maximum # of results to return
+
+  let results = [];
+
+  if (active) {
+    results = controller.get('model').filterBy('zip', active.get('zip'));
+    controller.set('activeProperty', null); // turn off active property
+  }
+
+  controller.set('results', _.take(results, max));
 }

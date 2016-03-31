@@ -18,31 +18,25 @@
   <div class="panel panel-on">
     <a tabindex="0" class="close" {{ action "clear" on="click" preventDefault=true }} href="#"><svg><use xlink:href="#icon-close"></use></svg></a>
     {{#if activeOwner.id}}
-      {{#owner-details activeOwner=activeOwner}}
-      {{/owner-details}}
+      {{#owner-details activeOwner=activeOwner}}{{/owner-details}}
     {{/if}}
 
     {{#if activeZip.id}}
-      {{#zip-details activeZip=activeZip}}
-      {{/zip-details}}
+      {{#zip-details activeZip=activeZip}}{{/zip-details}}
     {{/if}}
 
     {{#if activeProperty.id}}
-      {{#property-details activeProperty=activeProperty activeOwner=activeOwner activeZip=activeZip}}
-      {{/property-details}}
+      {{#property-details activeProperty=activeProperty activeOwner=activeOwner activeZip=activeZip}}{{/property-details}}
     {{/if}}
 
-    {{#unless activeProperty.id}}
-      {{#property-list results=results activeProperty=activeProperty}}
-      {{/property-list}}
-    {{/unless}}
+    {{#if results.length}}
+      {{#property-list results=results activeProperty=activeProperty}}{{/property-list}}
+    {{/if}}
   </div>
 
-  {{#streetview-loader activeProperty=activeProperty}}
-  {{/streetview-loader}}
+  {{#streetview-loader activeProperty=activeProperty}}{{/streetview-loader}}
 
-  {{#map-legend legendIsToggled=legendIsToggled}}
-  {{/map-legend}}
+  {{#map-legend legendIsToggled=legendIsToggled}}{{/map-legend}}
 
   <a href="#" class="legend-toggle btn {{if legendIsToggled "hide" ""}}" {{ action "toggleLegend" preventDefault=true }}>
     <svg><use xlink:href="#icon-compass"></use></svg>

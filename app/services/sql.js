@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import _ from 'npm:lodash';
 
 export default Ember.Service.extend({
   sql: new cartodb.SQL({
@@ -9,12 +8,10 @@ export default Ember.Service.extend({
   default: 'select * from speculator_data',
 
   activeOwner: function (property) {
-    const name = _.get(property, 'ownername1');
-
-    return 'select * from speculator_data where ownername1 = \'' + name + '\'';
+    return `select * from speculator_data where ownername1 = '${property.get('owner')}'`;
   },
 
   activeZip: function (property) {
-    return 'select * from speculator_data where propzip = \'' + _.get(property, 'propzip') + '\'';
+    return `select * from speculator_data where propzip = '${property.get('zip')}'`;
   }
 });
