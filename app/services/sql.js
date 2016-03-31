@@ -8,13 +8,13 @@ export default Ember.Service.extend({
 
   default: 'select * from speculator_data',
 
-  sqlQueryByOwner: function (property) {
+  activeOwner: function (property) {
     const name = _.get(property, 'ownername1');
 
     return 'select * from speculator_data where ownername1 = \'' + name + '\'';
   },
 
-  sqlQueryByZip: function (property) {
+  activeZip: function (property) {
     return 'select * from speculator_data where propzip = \'' + _.get(property, 'propzip') + '\'';
   }
 });

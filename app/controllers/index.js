@@ -11,18 +11,10 @@ export default Ember.Controller.extend({
   sql: Ember.computed.reads('sqlService.sql'),
 
   layerObserver: Ember.observer('layers.@each.visible', function () {
-    let controller = this,
-      sql = this.get('sql'),
-      layers = this.get('layers').filterBy('visible'),
-      filters = _.size(layers) ? layers.mapBy('sql').reduce(queryReduce()) : '',
-      query = this.get('sqlService').default + '\n' + filters;
+    let layers = this.get('layers').filterBy('visible').mapBy('id'),
+      model = this.store.peekAll('property').filter(item => _.includes(layers, item.get('layer')));
 
-    controller.set('isLoading', true);
-
-    sql.execute(query).done(function (data) {
-      controller.set('model', data.rows);
-      controller.set('isLoading', false);
-    });
+    this.set('model', model);
   }).on('init'),
 
   searchObserver: Ember.observer('search', function () {
@@ -32,7 +24,6 @@ export default Ember.Controller.extend({
 
     this.set('results', null);
     this.set('activeProperty', null);
-    this.set('activeOwner', null);
 
     if (_.size(search)) {
       search = search.toUpperCase();
@@ -41,46 +32,11 @@ export default Ember.Controller.extend({
     }
   }),
 
-  ownerObserver: Ember.observer('activeOwner', function () {
-    let controller = this,
-      sql = controller.get('sql'),
-      owner = controller.get('activeOwner'),
-      query = controller.get('sqlService').sqlQueryByOwner;
-
-    if (owner && !_.isEmpty(owner)) {
-      controller.set('activeProperty', null);
-      controller.set('activeZip', null);
-      controller.set('isLoading', true);
-
-      sql.execute(query(owner))
-        .done(function (data) {
-          controller.set('results', data.rows);
-          controller.set('isLoading', false);
-        });
-    }
-  }),
-
-  zipObserver: Ember.observer('activeZip', function () {
-    let controller = this,
-      sql = controller.get('sql')  ,
-      zip = controller.get('activeZip'),
-      query = controller.get('sqlService').sqlQueryByZip;
-
-    if (zip && !_.isEmpty(zip)) {
-      controller.set('activeProperty', null);
-      controller.set('activeOwner', null);
-      controller.set('isLoading', true);
-
-      sql.execute(query(zip))
-        .done(function (data) {
-          controller.set('results', data.rows);
-          controller.set('isLoading', false);
-        });
-    }
-  }),
+  ownerObserver: Ember.observer('activeOwner', observerHandler),
+  zipObserver: Ember.observer('activeZip', observerHandler),
 
   actions: {
-    clearSearch() {
+    clear() {
       this.set('search', null);
       this.set('results', null);
       this.set('activeProperty', null);
@@ -99,17 +55,30 @@ export default Ember.Controller.extend({
   }
 });
 
-function queryReduce () {
-  return function (results, value, index) {
-    let query = !index ? value : value.split('where ').pop();
-
-    return results + ' or\n' + query;
+function searchMatches(search) {
+  return function (property) {
+    return _.includes(property.get('owner').toUpperCase(), search);
   };
 }
 
-function searchMatches(search) {
-  return function (property) {
-    return _.includes(property.ownername1.toUpperCase(), search) ||
-           _.includes(property.propaddr.toUpperCase(), search);
-  };
+function observerHandler(controller, key) {
+  const active = controller.get(key),
+
+    keys = {
+      activeZip: 'zip',
+      activeOwner: 'owner',
+    },
+
+    toggle = {
+      activeZip: 'activeOwner',
+      activeOwner: 'activeZip'
+    },
+
+    results = active && controller.get('model').filterBy(keys[key], active.get(keys[key]));
+
+  if (active && !_.isEmpty(active)) {
+    controller.set('activeProperty', null);
+    controller.set(toggle[key], null);
+    controller.set('results', results);
+  }
 }

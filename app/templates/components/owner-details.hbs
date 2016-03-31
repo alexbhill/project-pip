@@ -1,7 +1,7 @@
-<p class="owner-name">{{format-detail name}} details:</p>
-<p class="owner-count">Total properties owned: {{count}}</p>
+<p class="owner-name">{{activeOwner.owner}} details:</p>
+<p class="owner-count">Total properties owned: {{activeOwner.count}}</p>
 <p>Address:</p>
 <address>
-  <p class="owner-street">{{format-detail street}}</p>
-  <p class="owner-city-state">{{format-detail city}}, {{state}} {{zip}}</p>
+  <p class="owner-street">{{activeOwner.ownerStreet}}</p>
+  <p class="owner-city-state">{{activeOwner.ownerCity}}, {{activeOwner.ownerState}} {{activeOwner.ownerZip}}</p>
 </address>

@@ -15,31 +15,26 @@ export default Ember.Component.extend({
   styleService: Ember.inject.service('styles'),
 
   layersObserver: Ember.observer('layers.@each.visible', function () {
-    let layers = this.get('layers'),
+    const layers = this.get('layers'),
       sublayers = this.get('viz').getSubLayers();
 
     _.each(layers, toggleLayers(sublayers));
   }),
 
-  activeObserver: Ember.observer('activeProperty.cartodb_id', function () {
-    let map = this.get('map'),
+  propertyObserver: Ember.observer('activeProperty.cartodb_id', function () {
+    const map = this.get('map'),
       active = this.get('activeProperty');
 
     if (active) {
-      map.panTo([active.y, active.x], { animate: true });
+      map.panTo([active.get('longitude'), active.get('latitude')], { animate: true });
     }
   }),
 
-  ownerObserver: Ember.observer('activeOwner.cartodb_id', function () {
-    observerLayerHandler(this, 'activeOwner');
-  }),
-
-  zipObserver: Ember.observer('activeZip.cartodb_id', function () {
-    observerLayerHandler(this, 'activeZip');
-  }),
+  ownerObserver: Ember.observer('activeOwner', observerLayerHandler),
+  zipObserver: Ember.observer('activeZip', observerLayerHandler),
 
   didInsertElement() {
-    let controller = this,
+    const controller = this,
       map = new L.Map('map', { zoomControl: false }).setView(controller.get('center'), 14),
       sql = controller.get('sqlService').default,
       styles = controller.get('styleService').default,
@@ -83,9 +78,9 @@ function toggleLayers (sublayers) {
 }
 
 function mapLayers(sql, styles) {
-  return function (layer) {
+  return function (layer, index) {
     return {
-      sql: sql + '\n' + layer.sql,
+      sql: sql + '\nwhere layer = ' + index,
       cartocss: styles,
       interactivity: 'cartodb_id'
     };
@@ -102,29 +97,27 @@ function addInteractive(controller) {
 
 function featureClick(controller) {
   return function (event, latlng, pos, data) {
-    let model = controller.get('model'),
-      active = model.findBy('cartodb_id', data.cartodb_id);
+    const id = String(data.cartodb_id),
+      active = controller.get('model').findBy('id', id);
 
     controller.set('activeProperty', active);
   };
 }
 
-function observerLayerHandler(controller, observeProperty) {
-  let active = controller.get(observeProperty),
+function observerLayerHandler(controller, key) {
+  const active = controller.get(key),
     layer = controller.get('viz'),
     layers = controller.get('layers'),
     service = controller.get('sqlService'),
     styles = controller.get('styleService').default,
     sublayers = layer.getSubLayers(),
-    toUnsetActiveLayer = !_.has(active, 'cartodb_id') && _.size(sublayers) > _.size(layers),
-    sql = _.includes(observeProperty, 'Zip')
-          ? service.sqlQueryByZip(active)
-          : service.sqlQueryByOwner(active),
-    index;
+    toUnsetActiveLayer = !_.has(active, 'id') && _.size(sublayers) > _.size(layers),
+    sql = service[key](active);
 
-  if (_.has(active, 'cartodb_id')) {
+  let index;
+
+  if (active) {
     _.each(sublayers, sublayer => sublayer.hide());
-
     layer.createSubLayer({
       sql: sql,
       cartocss: styles,
