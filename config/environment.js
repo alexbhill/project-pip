@@ -9,6 +9,7 @@ module.exports = function(environment) {
     STREETVIEW_KEY: 'AIzaSyCfdrkECzxMJ_DMIl5mpkmn00TaPYWtKnk',
     MAPBOX_TOKEN: 'pk.eyJ1IjoidWdoaXRzYWFyb24iLCJhIjoiY2lmN3NjeDUyMHp4Z3M0bHpiaWtpOWt5OCJ9.5_jbBjvsJoFcwFoSlhxVkQ',
     MAPBOX_ID: 'ughitsaaron.cif7scvjb0zqas7krsbxgkcv1',
+    cartoWorker: 'assets/fetch-carto.js',
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build

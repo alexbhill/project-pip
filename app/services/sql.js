@@ -6,6 +6,10 @@ export default Ember.Service.extend({
 
   default: 'select * from speculator_data',
 
+  model: function (fields) {
+    return `select ${fields.join(', ')} from speculator_data`;
+  },
+
   activeOwner: function (property) {
     return `select * from speculator_data where own_id = '${_.get(property, 'owner')}'`;
   },
