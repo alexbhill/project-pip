@@ -21,7 +21,7 @@ export default Ember.Service.extend({
   '#speculator_data [ count > 15 ][ count <= 30 ] {\n' +
     '\tpolygon-fill: #6eeb83;\n' +
   '}\n' +
-  '#speculator_data [ count < 15 ] {\n' +
+  '#speculator_data [ count <= 15 ] {\n' +
     '\tpolygon-fill: #1be7ff;\n' +
   '}'
 });

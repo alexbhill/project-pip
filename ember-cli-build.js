@@ -17,9 +17,6 @@ module.exports = function(defaults) {
     fingerprint: {
       exclude: ['assets/fetch-carto.js']
     },
-    // dotEnv: {
-    //   clientAllowedKeys: ['GOOGLE_STREETVIEW']
-    // },
     outputPaths: {
       app: {
         js: '/assets/main.js',
