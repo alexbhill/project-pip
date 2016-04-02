@@ -9,8 +9,6 @@ export default Ember.Route.extend({
       query = sql.prefix + encodeURIComponent(sql.default),
       worker = new Worker('/assets/fetch-carto.js');
 
-    console.log(localStorage.length);
-
     return new Ember.RSVP.Promise(function (resolve) {
       worker.postMessage(query);
 
