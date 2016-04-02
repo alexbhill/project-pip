@@ -14,6 +14,9 @@ module.exports = function(defaults) {
       browsers: ['last 2 ios version'],
       cascade: false
     },
+    fingerprint: {
+      exclude: ['assets/fetch-carto.js']
+    },
     // dotEnv: {
     //   clientAllowedKeys: ['GOOGLE_STREETVIEW']
     // },
