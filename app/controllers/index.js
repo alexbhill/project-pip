@@ -16,10 +16,6 @@ export default Ember.Controller.extend({
   layerService: Ember.inject.service('layers'),
   layers: Ember.computed.reads('layerService.layers'),
 
-  // our carto sql instance
-  sqlService: Ember.inject.service('sql'),
-  sql: Ember.computed.reads('sqlService.sql'),
-
   /**
    * change the data available in our model
    * based on visibility of layers
@@ -27,11 +23,11 @@ export default Ember.Controller.extend({
    */
   layerObserver: Ember.observer('layers.@each.visible', function () {
     let layers = this.get('layers').filterBy('visible').mapBy('id'), // e.g. [0, 2, 4]
-      model = this.store.peekAll('property').filter(item => _.includes(layers, item.get('layer')));
+      model = this.get('model').filter(item => _.includes(layers, _.get(item, 'layer')));
 
     // set our new model
-    this.set('model', model);
-  }).on('init'),
+    this.set('parcels', model);
+  }),
 
   /**
    * set results based on search
@@ -40,7 +36,7 @@ export default Ember.Controller.extend({
    */
   searchObserver: Ember.observer('search', function () {
     const search = this.get('search'),
-      model = this.get('model'),
+      model = this.get('parcels'),
       max = 10; // number of results to return
 
     let results = [];
@@ -95,7 +91,7 @@ function searchMatches(search) {
   search = search.toUpperCase();
 
   return function (property) {
-    return _.includes(property.get('owner').toUpperCase(), search) || _.includes(property.get('address').toUpperCase(), search);
+    return _.includes(_.get(property, 'owner').toUpperCase(), search) || _.includes(_.get(property, 'address').toUpperCase(), search);
   };
 }
 
@@ -114,7 +110,7 @@ function ownerObserverHandler(controller, key) {
   let results = [];
 
   if (active) {
-    results = controller.get('model').filterBy('owner', active.get('owner'));
+    results = controller.get('model').filterBy('owner', _.get(active, 'owner'));
     controller.set('activeProperty', null); // turn off active property
   }
 
@@ -134,7 +130,7 @@ function zipObserverHandler(controller, key) {
   let results = [];
 
   if (active) {
-    results = controller.get('model').filterBy('zip', active.get('zip'));
+    results = controller.get('model').filterBy('zip', _.get(active, 'zip'));
     controller.set('activeProperty', null); // turn off active property
   }
 

@@ -6,19 +6,22 @@ export default Ember.Service.extend({
     '\tline-width: 0.5;\n' +
     '\tline-opacity: 0.25;\n' +
   '}\n' +
-  '#speculator_data [ count > 100 ][ count <= 381 ] {\n' +
+  '#speculator_data [ count > 350 ] {\n' +
+    '\tpolygon-fill: #ff1053;\n' +
+  '}\n' +
+  '#speculator_data [ count > 175 ][ count <= 350 ] {\n' +
     '\tpolygon-fill: #ff5714;\n' +
   '}\n' +
-  '#speculator_data [ count > 57 ][ count <= 100 ] {\n' +
-    '\tpolygon-fill: #e8aa14;\n' +
+  '#speculator_data [ count > 65 ][ count <= 175 ] {\n' +
+    '\tpolygon-fill: #6c6ea0;\n' +
   '}\n' +
-  '#speculator_data [ count > 38 ][ count <= 57 ] {\n' +
+  '#speculator_data [ count > 30 ][ count <= 65 ] {\n' +
     '\tpolygon-fill: #e4ff1a;\n' +
   '}\n' +
-  '#speculator_data [ count > 19 ][ count <= 38 ] {\n' +
+  '#speculator_data [ count > 15 ][ count <= 30 ] {\n' +
     '\tpolygon-fill: #6eeb83;\n' +
   '}\n' +
-  '#speculator_data [ count < 19 ] {\n' +
+  '#speculator_data [ count < 15 ] {\n' +
     '\tpolygon-fill: #1be7ff;\n' +
   '}'
 });

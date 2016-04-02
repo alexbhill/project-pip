@@ -44,7 +44,7 @@ export default Ember.Component.extend({
       active = this.get('activeProperty');
 
     if (active) {
-      map.panTo([active.get('longitude'), active.get('latitude')], { animate: true });
+      map.panTo([_.get(active, 'longitude'), _.get(active, 'latitude')], { animate: true });
     }
   }),
 
@@ -90,6 +90,7 @@ export default Ember.Component.extend({
       .done(function (layer) {
         _.each(layer.getSubLayers(), addInteractive(controller));
         controller.set('viz', layer);
+        document.querySelector('.loading-overlay').classList.remove('is-loading');
       });
 
     this.set('map', map);
@@ -161,7 +162,7 @@ function featureClick(controller) {
   // find the parcel in the model by id
   // and set #activeProperty
   return function (event, latlng, pos, data) {
-    const id = String(data.cartodb_id),
+    const id = data.cartodb_id,
       active = controller.get('model').findBy('id', id);
 
     controller.set('activeProperty', active);
@@ -174,8 +175,6 @@ function featureClick(controller) {
  * @param  {String} key - the property being observed ('activeZip'|'activeOwner')
  */
 function observerLayerHandler(controller, key) {
-  console.log(controller, key);
-
   const active = controller.get(key),
     layer = controller.get('viz'),
     layers = controller.get('layers'),
