@@ -104,8 +104,7 @@ function propertyHandler(controller, key) {
 }
 
 function ownerObserverHandler(controller, key) {
-  const active = controller.get(key),
-    max = 10; // maximum # of results to return
+  const active = controller.get(key);
 
   let results = [];
 
@@ -114,7 +113,7 @@ function ownerObserverHandler(controller, key) {
     controller.set('activeProperty', null); // turn off active property
   }
 
-  controller.set('results', _.take(results, max));
+  controller.set('results', results);
 }
 
 /**
@@ -124,8 +123,7 @@ function ownerObserverHandler(controller, key) {
  * @param {key} the key being observed
  */
 function zipObserverHandler(controller, key) {
-  const active = controller.get(key),
-    max = 10; // maximum # of results to return
+  const active = controller.get(key);
 
   let results = [];
 
@@ -134,5 +132,5 @@ function zipObserverHandler(controller, key) {
     controller.set('activeProperty', null); // turn off active property
   }
 
-  controller.set('results', _.take(results, max));
+  controller.set('results', results);
 }

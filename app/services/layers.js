@@ -9,27 +9,27 @@ export default Ember.Service.extend({
     }, {
       id: 1,
       color: '#6eeb83',
-      description: '15 – 30',
+      description: '15–50',
       visible: true
     }, {
       id: 2,
       color: '#e4ff1a',
-      description: '30 – 65',
+      description: '50–100',
       visible: true
     }, {
       id: 3,
       color: '#6c6ea0',
-      description: '65 – 175',
+      description: '100–250',
       visible: true
     }, {
       id: 4,
       color: '#ff5714',
-      description: '175 > 350',
+      description: '250–500',
       visible: true
     }, {
       id: 5,
       color: '#ff1053',
-      description: '350 > ',
+      description: '≥ 500',
       visible: true
     }]
 });
