@@ -8,6 +8,8 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   classNames: ['property', 'panel-item'],
 
+  isUnidentified: Ember.computed.equal('activeProperty.owner', 'UNIDENTIFIED'),
+
   actions: {
     setActiveOwner(property) {
       this.set('activeOwner', property);

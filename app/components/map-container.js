@@ -12,12 +12,7 @@
 import Ember from 'ember';
 import _ from 'npm:lodash';
 import ENV from 'property-praxis/config/environment';
-
-// trying to maximize code reuse here
-const zipObserverLayerHandler = observerLayerHandler,
-  ownerObserverLayerHandler = observerLayerHandler;
-
-export default Ember.Component.extend({
+ export default Ember.Component.extend({
   center: [42.3653, -83.0693], // Detroit
 
   sqlService: Ember.inject.service('sql'),
@@ -71,7 +66,7 @@ export default Ember.Component.extend({
    * @observes activeOwner
    */
   ownerObserver: Ember.observer('activeOwner', function (controller, key) {
-    ownerObserverLayerHandler(controller, key); // ¯\_(ツ)_/¯
+    observerLayerHandler(controller, key);
   }),
 
   /**
@@ -79,7 +74,9 @@ export default Ember.Component.extend({
    * focuses feature layer on parcels matching #activeOwner.ownerzip
    * @observes activeZip
    */
-  zipObserver: Ember.observer('activeZip', zipObserverLayerHandler),
+  zipObserver: Ember.observer('activeZip', function (controller, key) {
+    observerLayerHandler(controller, key);
+  }),
 
   didInsertElement() {
     const controller = this,
