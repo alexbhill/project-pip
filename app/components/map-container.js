@@ -44,8 +44,9 @@ export default Ember.Component.extend({
       active = this.get('activeProperty'),
       icon = L.divIcon({
         className: 'active-property-marker',
-        html: '<svg><use xlink:href="#icon-marker"></use></svg>'
-      })
+        html: '<svg><use xlink:href="#icon-marker"></use></svg>',
+        iconSize: L.point(30, 30)
+      });
 
     let coordinates, marker;
 
