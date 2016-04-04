@@ -41,10 +41,26 @@ export default Ember.Component.extend({
    */
   propertyObserver: Ember.observer('activeProperty', function () {
     const map = this.get('map'),
-      active = this.get('activeProperty');
+      active = this.get('activeProperty'),
+      icon = L.divIcon({
+        className: 'active-property-marker',
+        html: '<svg><use xlink:href="#icon-marker"></use></svg>'
+      })
+
+    let coordinates, marker;
+
+    map.eachLayer(function (layer) {
+      if (_.has(layer, 'options.icon')) {
+        map.removeLayer(layer);
+      }
+    });
 
     if (active) {
-      map.panTo([_.get(active, 'longitude'), _.get(active, 'latitude')], { animate: true });
+      coordinates = [_.get(active, 'longitude'), _.get(active, 'latitude')]
+
+      map.panTo(coordinates, { animate: true });
+      marker = L.marker(coordinates, { icon: icon });
+      map.addLayer(marker);
     }
   }),
 
