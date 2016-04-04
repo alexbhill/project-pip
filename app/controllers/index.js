@@ -69,6 +69,7 @@ export default Ember.Controller.extend({
       this.set('activeProperty', null);
       this.set('activeZip', null);
       this.set('activeOwner', null);
+      this.toggleProperty('searchIsToggled');
     },
 
     toggleSearch() {

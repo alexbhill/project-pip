@@ -1,6 +1,6 @@
 <div class="search {{ if searchIsToggled 'search-on' }}" >
   {{input type="search" value=search placeholder="Search by address or street name…" autofocus="autofocus"}}
-  <a tabindex="0" class="close" {{ action "toggleSearch" preventDefault=true}} {{ action "clear" on="click" }} href="#"><svg><use xlink:href="#icon-close"></use></svg></a>
+  <a tabindex="0" class="close" {{ action "clear" on="click" }} href="#"><svg><use xlink:href="#icon-close"></use></svg></a>
 </div>
 
 <div class="page">
@@ -12,7 +12,6 @@
   </nav>
 
   <div class="panel panel-on">
-    <a tabindex="0" class="close" {{ action "clear" on="click" preventDefault=true }} href="#"><svg><use xlink:href="#icon-close"></use></svg></a>
     {{#if activeOwner.id}}
       {{#owner-details activeOwner=activeOwner}}{{/owner-details}}
     {{/if}}

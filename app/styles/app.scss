@@ -207,10 +207,6 @@ svg {
     margin: 1rem 0 0 1rem;
     max-width: 25rem;
     box-shadow: $shadow;
-
-    .close {
-      display: none;
-    }
   }
 }
 
@@ -276,6 +272,10 @@ svg {
       top: rem(-37)
     }
   }
+}
+
+.panel-item:first-of-type {
+  box-shadow: 0 -0.125rem 0 rgba(91, 149, 103, 0.95);
 }
 
 .owner {
