@@ -34,7 +34,8 @@ function mapPayload(item) {
     ownerZip: item.ownerzip,
     count: item.count,
     zipCount: item.zipcount,
-    layer: item.layer
+    layer: item.layer,
+    isActive: false
   };
 }
 
