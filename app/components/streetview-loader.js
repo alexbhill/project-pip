@@ -6,7 +6,7 @@ export default Ember.Component.extend({
   src: null,
   alt: null,
 
-  classNames: ['streetview'],
+  classNames: ['streetview', 'panel-item'],
   classNameBindings: ['isLoaded'],
   isLoaded: false,
 
@@ -26,11 +26,11 @@ export default Ember.Component.extend({
    * listen once for a load event on the image and
    * toggle isLoaded
    */
-  handleLoad: Ember.observer('activeProperty', function() {
+  handleLoad: Ember.observer('activeProperty', function(controller) {
     this.set('isLoaded', false); // re-init isLoaded to false on change
 
-    this.$().children('img').one('load', () => {
-      this.set('isLoaded', true);
+    this.$('.streetview-container img').one('load', function() {
+      controller.set('isLoaded', true);
     });
   })
 });
