@@ -1,0 +1,19 @@
+@mixin shadow {
+  background-color: $brand;
+  border-radius: rem(4);
+  box-shadow: 0 rem(1) rem(5) rgba(black,.65);
+}
+
+@mixin hide-for-transition {
+  position: absolute;
+  left: -1000%;
+  opacity: 0;
+  transition: opacity $transition;
+}
+
+@mixin show-for-transition {
+  position: relative;
+  left: 0;
+  opacity: 1;
+  transition: opacity $transition;
+}

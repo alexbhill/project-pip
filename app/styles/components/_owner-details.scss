@@ -1,0 +1,11 @@
+.has-active-owner .owner-details {
+  @include show-for-transition;
+}
+
+.owner {
+  box-shadow: 0 rem(2) 0 $brand-secondary;
+
+  address p {
+    margin: 0;
+  }
+}

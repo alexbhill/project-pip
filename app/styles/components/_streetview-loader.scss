@@ -1,0 +1,52 @@
+$max-height: rem(368);
+
+.has-active-property .streetview {
+  @include show-for-transition;
+}
+
+.streetview {
+  width:100%;
+  z-index: 1;
+
+  img {
+    height: 100%;
+    max-height: $max-height;
+    right: 0;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    width: auto;
+    z-index: 2;
+  }
+
+  @media (#{$large}) {
+    box-shadow: $brand-border, $shadow;
+
+    img {
+      position: relative;
+      width: 100%;
+      display: block;
+      height: auto;
+    }
+  }
+}
+
+.is-loaded img {
+  opacity: 1;
+  transition: opacity $transition;
+}
+
+.streetview-container {
+  background-color: #e4e3df;
+  width: 100%;
+  height: $max-height;
+}
+
+.streetview .loading-overlay {
+  opacity: 1;
+  padding-top: 50%;
+}
+
+.streetview.is-loaded .loading-overlay {
+  opacity: 0;
+}

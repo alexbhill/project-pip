@@ -1,0 +1,74 @@
+.nav-menu {
+  background-color: $brand;
+  box-shadow: inset $brand-border;
+  left: 0;
+  padding: 0 rem(16);
+  padding: rem(16);
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 0;
+  display: none;
+  z-index: 10;
+
+  &.nav-on {
+    display: block;
+  }
+}
+
+.nav-menu .close {
+  position: absolute;
+  right: $right-offset;
+  top: rem(16);
+}
+
+.nav-menu .nav-menu-items {
+  margin-top: rem(16);
+}
+
+.nav-menu-item {
+  color: $text;
+  font-size: rem(20);
+  padding: rem(14) 0;
+
+  &:not(:last-child) {
+    box-shadow: 0 rem(2) 0 $brand-secondary;
+  }
+}
+
+.nav-icons {
+  float: right;
+  padding: $spacing ($spacing + 0.25) $spacing $spacing;
+  position: relative;
+  text-align: right;
+  z-index: 0;
+}
+
+.nav-icons li {
+  display: inline-block;
+
+  &:not(:last-child) {
+    margin-right: 0.25rem;
+  }
+}
+
+.nav-icon {
+  position: relative;
+
+  &:not(:last-child) {
+    margin-right: 0.35rem;
+  }
+
+  svg {
+    display: inline-block;
+    height: 100%;
+    padding: 0.25rem;
+    width: 100%;
+  }
+
+  a {
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+  }
+}

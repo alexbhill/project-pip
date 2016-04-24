@@ -1,0 +1,7 @@
+.has-active-zip .zip-details {
+  @include show-for-transition;
+}
+
+.zip-count {
+  margin: 0;
+}

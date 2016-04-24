@@ -1,0 +1,42 @@
+.search {
+  @include shadow;
+  position: absolute;
+  top: 0;
+  display: none;
+  width: 100%;
+  z-index: 10;
+
+  input {
+    border: none;
+    color: $text;
+    line-height: rem(50);
+    position: relative;
+    text-indent: 0.6rem;
+    width: 100%;
+    background-color: transparent;
+  }
+
+  .close {
+    position: absolute;
+    right: $right-offset;
+    top: 0.875rem;
+  }
+
+  &.search-on {
+    display: block;
+  }
+
+  @media (#{$large}) {
+    position: relative;
+    display: block;
+    margin: 1rem 0 0 1rem;
+    max-width: 25rem;
+    box-shadow: $shadow;
+  }
+}
+
+.nav-icon-search {
+  @media (#{$large}) {
+    display: none;
+  }
+}
