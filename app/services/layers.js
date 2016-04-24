@@ -31,10 +31,5 @@ export default Ember.Service.extend({
       color: '#ff1053',
       description: '≥ 500',
       visible: true
-    }, {
-      id: 6,
-      color: '#111',
-      description: 'Unidentified Owner',
-      visible: true
     }]
 });
