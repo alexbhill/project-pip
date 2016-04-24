@@ -46,9 +46,7 @@ export default Ember.Service.extend({
 
   default: 'select * from speculator_data',
 
-  fields: ['cartodb_id', 'count', 'layer', 'own_id', 'ownercity',
-    'ownerstate', 'ownerstr', 'ownerzip', 'propaddr', 'propzip',
-    'x', 'y', 'zipcount'],
+  fields: ['cartodb_id', 'count', 'layer', 'own_id', 'ownername1', 'ownercity', 'ownerstate', 'ownerstr', 'ownerzip', 'propaddr', 'propzip', 'x', 'y', 'zipcount'],
 
   model: function (fields) {
     // only select fields from db as necessary

@@ -2,19 +2,10 @@
 var scope = this;
 
 onmessage = function(e) {
-  if (scope.fetch) {
-    fetch(e.data)
-    .then(function (response) {
-      return response.json();
-    }).then(function (data) {
-      postMessage(data.rows.map(mapPayload));
-    });
-  } else {
-    getJSON(e.data, function (data) {
-      var response = JSON.parse(data);
-      postMessage(response.rows.map(mapPayload));
-    });
-  }
+  getJSON(e.data, function (data) {
+    var response = JSON.parse(data);
+    postMessage(response.rows.map(mapPayload));
+  });
 };
 
 // see notes in sql service
@@ -24,7 +15,7 @@ function mapPayload(item) {
   return {
     id: parseInt(item.cartodb_id),
     type: 'property',
-    owner: item.own_id,
+    owner: getOwnerName(item),
     address: item.propaddr,
     zip: item.propzip,
     latitude: item.x,
@@ -52,4 +43,10 @@ function getJSON(url, cb) {
       }
     }
   };
+}
+
+function getOwnerName(item) {
+  return item.own_id === 'UNIDENTIFIED'
+    ? item.ownername1
+    : item.own_id
 }
