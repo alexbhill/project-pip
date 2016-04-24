@@ -1,5 +1,5 @@
 <div class="search {{ if searchIsToggled 'search-on' }}" >
-  {{input type="search" value=search placeholder="Search by address or street name…" autofocus="autofocus"}}
+  {{input type="search" value=search placeholder="Search by owner, street name, or zip code…" autofocus="autofocus"}}
   <a tabindex="0" class="close" {{ action "clear" on="click" }} href="#"><svg><use xlink:href="#icon-close"></use></svg></a>
 </div>
 
@@ -11,25 +11,17 @@
     <a class="nav-icon nav-icon-search btn" tabindex="0" {{ action "toggleSearch" preventDefault=true}} href="#"><svg><use xlink:href="#icon-search"></use></svg></a>
   </nav>
 
-  <div class="panel panel-on">
-    {{#if activeOwner.id}}
-      {{#owner-details activeOwner=activeOwner}}{{/owner-details}}
-    {{/if}}
+  <div class="panel panel-on {{if activeOwner.id "has-active-owner " ""}}{{if activeZip.id "has-active-zip " ""}}{{if activeProperty.id "has-active-property " ""}}{{if results.length "has-results" ""}}">
+    {{#owner-details activeOwner=activeOwner}}{{/owner-details}}
 
-    {{#if activeZip.id}}
-      {{#zip-details activeZip=activeZip}}{{/zip-details}}
-    {{/if}}
+    {{#zip-details activeZip=activeZip}}{{/zip-details}}
 
-    {{#if activeProperty.id}}
-      {{#property-details activeProperty=activeProperty activeOwner=activeOwner activeZip=activeZip clear="clear"}}{{/property-details}}
-    {{/if}}
+    {{#property-details activeProperty=activeProperty activeOwner=activeOwner activeZip=activeZip clear="clear"}}{{/property-details}}
 
-    {{#if results.length}}
-      {{#property-list results=results activeProperty=activeProperty}}{{/property-list}}
-    {{/if}}
+    {{#property-list search=search results=results activeProperty=activeProperty}}{{/property-list}}
+
+    {{#streetview-loader activeProperty=activeProperty}}{{/streetview-loader}}
   </div>
-
-  {{#streetview-loader activeProperty=activeProperty}}{{/streetview-loader}}
 
   {{#map-legend legendIsToggled=legendIsToggled}}{{/map-legend}}
 
