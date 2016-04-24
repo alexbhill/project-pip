@@ -12,7 +12,8 @@
 import Ember from 'ember';
 import _ from 'npm:lodash';
 import ENV from 'property-praxis/config/environment';
- export default Ember.Component.extend({
+
+export default Ember.Component.extend({
   center: [42.3653, -83.0693], // Detroit
 
   sqlService: Ember.inject.service('sql'),
@@ -52,7 +53,7 @@ import ENV from 'property-praxis/config/environment';
     });
 
     if (active) {
-      coordinates = [_.get(active, 'longitude'), _.get(active, 'latitude')]
+      coordinates = [_.get(active, 'longitude'), _.get(active, 'latitude')];
 
       map.panTo(coordinates, { animate: true });
       marker = L.marker(coordinates, { icon: icon });
@@ -65,18 +66,14 @@ import ENV from 'property-praxis/config/environment';
    * focuses feature layer on parcels matching #activeOwner.owner
    * @observes activeOwner
    */
-  ownerObserver: Ember.observer('activeOwner', function (controller, key) {
-    observerLayerHandler(controller, key);
-  }),
+  ownerObserver: Ember.observer('activeOwner', observerLayerHandler.bind(null)),
 
   /**
    * calls #observerLayerHandler on change
    * focuses feature layer on parcels matching #activeOwner.ownerzip
    * @observes activeZip
    */
-  zipObserver: Ember.observer('activeZip', function (controller, key) {
-    observerLayerHandler(controller, key);
-  }),
+  zipObserver: Ember.observer('activeZip', observerLayerHandler.bind(null)),
 
   didInsertElement() {
     const controller = this,

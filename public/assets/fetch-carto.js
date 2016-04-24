@@ -15,7 +15,7 @@ onmessage = function(e) {
       postMessage(response.rows.map(mapPayload));
     });
   }
-}
+};
 
 // see notes in sql service
 // regarding our carto table

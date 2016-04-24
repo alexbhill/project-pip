@@ -58,13 +58,13 @@ export default Ember.Controller.extend({
    * observe changes to activeOwner by calling observerHandler
    * @observes activeOwner
    */
-  ownerObserver: Ember.observer('activeOwner', ownerObserverHandler),
+  ownerObserver: Ember.observer('activeOwner', observerHandler.bind(null,  'owner')),
 
   /**
    * observe changes to activeZip by calling observerHandler
    * @observes activeZip
    */
-  zipObserver: Ember.observer('activeZip', zipObserverHandler),
+  zipObserver: Ember.observer('activeZip', observerHandler.bind(null, 'zip')),
 
   actions: {
     clear() {
@@ -76,7 +76,7 @@ export default Ember.Controller.extend({
     },
 
     setActiveZip(property) {
-      this.set('activeZip', property)
+      this.set('activeZip', property);
     },
 
     toggleSearch() {
@@ -111,7 +111,7 @@ function searchByZip(search) {
     const zip = _.get(value, 'zip');
 
     return _.startsWith(String(zip), search);
-  }
+  };
 }
 
 function propertyHandler(controller, key) {
