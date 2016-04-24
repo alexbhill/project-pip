@@ -5,15 +5,15 @@
 }
 
 @mixin hide-for-transition {
-  position: absolute;
   left: -1000%;
   opacity: 0;
+  position: absolute;
   transition: opacity $transition;
 }
 
 @mixin show-for-transition {
-  position: relative;
   left: 0;
   opacity: 1;
+  position: relative;
   transition: opacity $transition;
 }

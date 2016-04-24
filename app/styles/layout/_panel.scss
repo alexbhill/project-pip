@@ -25,17 +25,16 @@
   }
 
   @media (#{$large}) {
-    position: relative;
-    z-index: 11;
-    max-width: 25rem;
+    box-shadow: $brand-border, $shadow;
     margin: 0 0 0 1rem;
+    max-width: 25rem;
+    position: relative;
     transform: none;
     transition: none;
-    box-shadow: $brand-border, $shadow;
     z-index: 2;
 
     .close {
-      top: rem(-37)
+      top: rem(-37);
     }
   }
 }
@@ -44,16 +43,12 @@
   @include hide-for-transition;
   padding: 1rem;
 
-  &:first-of-type {
-    box-shadow: 0 -0.125rem 0 rgba(91, 149, 103, 0.95);
-  }
-}
+  p {
+    margin-bottom: rem(10);
+    margin-top: 0;
 
-.panel-item p {
-  margin-top: 0;
-  margin-bottom: rem(10);
-
-  &:last-child {
-    margin-bottom: 0;
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 }

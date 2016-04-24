@@ -1,13 +1,13 @@
 .legend {
   @include shadow;
-  bottom: 0;
-  display: none;
   background-color: $brand;
+  bottom: 0;
   color: $text;
+  display: none;
   left: 0;
-  margin: 0 0 ($spacing + 0.25) ($spacing + 0.25);
+  margin: 0 0 ($spacing + .25) ($spacing + .25);
   max-width: 15rem;
-  padding: ($spacing + 0.25) $spacing $spacing;
+  padding: ($spacing + .25) $spacing $spacing;
   position: absolute;
   z-index: 11;
 
@@ -25,31 +25,33 @@
   }
 
   .close {
-    position: absolute;
-    right: $spacing + 0.25;
-    top: $spacing + 0.25;
     fill: $text;
+    position: absolute;
+    right: $spacing + .25;
+    top: $spacing + .25;
   }
 }
+
 .legend-marker-color {
-  width: auto;
   height: auto;
+  width: auto;
 }
+
 .legend-label {
   cursor: pointer;
 }
 
 .legend-toggle {
-  position: absolute;
   bottom: 0;
   left: 0;
-  margin: 0 0 ($spacing + 0.25) ($spacing + 0.25);
+  margin: 0 0 ($spacing + .25) ($spacing + .25);
+  position: absolute;
 }
 
 .legend-icon {
   display: inline-block;
-  width: rem(16);
   fill: $text;
+  width: rem(16);
 }
 
 .legend-is-toggled {

@@ -1,0 +1,2 @@
+files:
+  include: 'app/styles/**/*.scss'

@@ -1,0 +1,71 @@
+::-webkit-input-placeholder {
+  color: $text;
+  opacity: .5;
+}
+
+:-moz-placeholder {
+  color: $text;
+  opacity: .5;
+}
+
+::-moz-placeholder {
+  color: $text;
+  opacity: .5;
+}
+
+:-ms-input-placeholder {
+  color: $text;
+  opacity: .5;
+}
+
+a,
+input,
+button {
+  outline: none;
+}
+
+html,
+body {
+  background-color: $brand;
+  font-family: $font;
+  font-size: rem(16);
+}
+
+body {
+  overflow-y: hidden;
+}
+
+svg {
+  height: 100%;
+  pointer-events: none;
+  width: 100%;
+}
+
+address {
+  font-style: normal;
+}
+
+[class*='-list'] {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.toggler,
+.hide {
+  display: none !important;
+}
+
+.btn {
+  @include shadow;
+  background-color: $brand;
+  display: inline-block;
+  height: rem(35);
+  padding: rem(4);
+  width: rem(35);
+  z-index: 10;
+
+  svg {
+    fill: $text;
+  }
+}

@@ -5,15 +5,15 @@ $max-height: rem(368);
 }
 
 .streetview {
-  width:100%;
+  width: 100%;
   z-index: 1;
 
   img {
     height: 100%;
     max-height: $max-height;
-    right: 0;
     opacity: 0;
     position: absolute;
+    right: 0;
     top: 0;
     width: auto;
     z-index: 2;
@@ -23,10 +23,10 @@ $max-height: rem(368);
     box-shadow: $brand-border, $shadow;
 
     img {
-      position: relative;
-      width: 100%;
       display: block;
       height: auto;
+      position: relative;
+      width: 100%;
     }
   }
 }
@@ -38,8 +38,8 @@ $max-height: rem(368);
 
 .streetview-container {
   background-color: #e4e3df;
-  width: 100%;
   height: $max-height;
+  width: 100%;
 }
 
 .streetview .loading-overlay {

@@ -1,5 +1,6 @@
 #map {
   bottom: 0;
+  cursor: pointer;
   height: 100%;
   left: 0;
   position: absolute;
@@ -7,13 +8,12 @@
   top: 0;
   width: 100%;
   z-index: 0;
-  cursor: pointer;
 }
 
 #map .leaflet-bar a {
   background-color: $brand;
-  color: $text;
   border-bottom: none;
+  color: $text;
 }
 
 .active-property-marker {
