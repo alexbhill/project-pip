@@ -1,6 +1,12 @@
 {{#each results as |property|}}
-  <li class="property" {{action "setActiveProperty" property}} itemscope itemtype="http://schema.org/Property">
-    <p itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{format-details property.owner}}</span></p>
-    <p itemscope itemtype="http://schema.org/PostalAddress"><span itemprop="streetAddress">{{format-details property.address}}</span></p>
-  </li>
+  {{#if (is-zip search)}}
+    <li class="property" {{action "setActiveZip" property}} itemscope itemtype="http://schema.org/Property">
+      <p>See speculation in {{property.zip}}</p>
+    </li>
+  {{else}}
+    <li class="property" {{action "setActiveProperty" property}} itemscope itemtype="http://schema.org/Property">
+      <p itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{format-details property.owner}}</span></p>
+      <p itemscope itemtype="http://schema.org/PostalAddress"><span itemprop="streetAddress">{{format-details property.address}}</span></p>
+    </li>
+  {{/if}}
 {{/each}}

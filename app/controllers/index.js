@@ -41,7 +41,9 @@ export default Ember.Controller.extend({
 
     let results = [];
 
-    if (_.size(search)) {
+    if (_.size(search) && isZip(search)) {
+      results = _.take(model.filter(searchByZip(search)));
+    } else if (_.size(search) && !isZip(search)) {
       // filter the model by calling #searchMatches
       results = _.take(model.filter(searchMatches(search)), max);
     }
@@ -72,6 +74,10 @@ export default Ember.Controller.extend({
       this.set('searchIsToggled', false);
     },
 
+    setActiveZip(property) {
+      this.set('activeZip', property)
+    },
+
     toggleSearch() {
       this.toggleProperty('searchIsToggled');
     },
@@ -89,11 +95,22 @@ export default Ember.Controller.extend({
  * @return {callback} returns a boolean based on match
  */
 function searchMatches(search) {
-  search = search.toUpperCase();
+  const match = search.toUpperCase();
 
-  return function (property) {
-    return _.includes(_.get(property, 'owner').toUpperCase(), search) || _.includes(_.get(property, 'address').toUpperCase(), search);
+  return function (value) {
+    const owner = _.get(value, 'owner').toUpperCase(),
+      property = _.get(value, 'address').toUpperCase();
+
+    return _.includes(owner, match) || _.includes(property, match);
   };
+}
+
+function searchByZip(search) {
+  return function (value) {
+    const zip = _.get(value, 'zip');
+
+    return _.startsWith(String(zip), search);
+  }
 }
 
 function propertyHandler(controller, key) {
@@ -134,4 +151,17 @@ function zipObserverHandler(controller, key) {
   }
 
   controller.set('results', results);
+}
+
+/**
+ * search is a zipCode
+ * @param  {string|number}  search
+ * @return {Boolean}
+ */
+function isZip(search) {
+  const isNumber = _.isNumber(Number(search)), // is not `NaN`
+    prefix = String(48), // all detroit zip codes begin with 48
+    length = _.size(String(search));
+
+  return isNumber && _.startsWith(String(search), prefix) && length > prefix.length;
 }

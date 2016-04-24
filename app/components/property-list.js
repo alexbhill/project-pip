@@ -12,6 +12,11 @@ export default Ember.Component.extend({
   actions: {
     setActiveProperty(property) {
       this.set('activeProperty', property);
+    },
+
+    setActiveZip(property) {
+      this.sendAction('clear');
+      this.set('activeZip', property);
     }
   }
 });

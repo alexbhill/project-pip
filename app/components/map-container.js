@@ -195,6 +195,7 @@ function observerLayerHandler(controller, key) {
     service = controller.get('sqlService'),
     styles = controller.get('styleService').default,
     sublayers = layer.getSubLayers(),
+    map = controller.get('map'),
 
     // is true if active has no property id & the
     // number of current sublayers is greater than
@@ -222,6 +223,8 @@ function observerLayerHandler(controller, key) {
     // add interactivity to our new layer
     layer.getSubLayer(index).setInteraction(true);
     layer.getSubLayer(index).on('featureClick', featureClick(controller));
+
+    map.panTo([_.get(active, 'longitude'), _.get(active, 'latitude')]);
   }
 
   if (toUnsetActiveLayer) {
