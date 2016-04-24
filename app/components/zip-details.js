@@ -1,5 +1,5 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  classNames: ['owner', 'panel-item']
+  classNames: ['zip', 'panel-item', 'zip-details']
 });

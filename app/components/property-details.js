@@ -6,7 +6,7 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  classNames: ['property', 'panel-item'],
+  classNames: ['property', 'panel-item', 'property-details'],
 
   isUnidentified: Ember.computed.equal('activeProperty.owner', 'UNIDENTIFIED'),
 
