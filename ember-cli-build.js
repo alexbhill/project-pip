@@ -15,7 +15,7 @@ module.exports = function(defaults) {
       cascade: false
     },
     fingerprint: {
-      exclude: ['assets/fetch-carto.js']
+      exclude: ['assets/fetch-carto.js', 'assets/filter-array.js']
     },
     outputPaths: {
       app: {
