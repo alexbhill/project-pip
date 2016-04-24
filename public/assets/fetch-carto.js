@@ -1,3 +1,4 @@
+/* jshint worker: true */
 var scope = this;
 
 onmessage = function(e) {

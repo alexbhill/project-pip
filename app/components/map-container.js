@@ -96,7 +96,7 @@ import ENV from 'property-praxis/config/environment';
 
     new L.Control.Zoom({ position: 'bottomright' }).addTo(map);
 
-    L.tileLayer(`https://api.tiles.mapbox.com/v4/${ENV.MAPBOX_ID}/{z}/{x}/{y}.png?access_token=${ENV.MAPBOX_TOKEN}`)
+    L.tileLayer(`https://maps.omniscale.net/v2/property-praxis-307ec2e7/style.grayscale/{z}/{x}/{y}.png`)
       .addTo(map);
 
     cartodb.createLayer(map, layerSource)

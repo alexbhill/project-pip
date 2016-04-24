@@ -6,6 +6,7 @@
  */
 
 import Ember from 'ember';
+import ENV from 'property-praxis/config/environment';
 import _ from 'npm:lodash';
 
 export default Ember.Controller.extend({
@@ -121,36 +122,25 @@ function propertyHandler(controller, key) {
   }
 }
 
-function ownerObserverHandler(controller, key) {
-  const active = controller.get(key);
-
-  let results = [];
-
-  if (active) {
-    results = controller.get('model').filterBy('owner', _.get(active, 'owner'));
-    controller.set('activeProperty', null); // turn off active property
-  }
-
-  controller.set('results', results);
-}
-
-/**
- * returns results based on changes to activeZip
- * or activeOwner
- * @param {controller} Ember Controller
- * @param {key} the key being observed
- */
-function zipObserverHandler(controller, key) {
-  const active = controller.get(key);
-
-  let results = [];
+function observerHandler(property, controller, key) {
+  const active = controller.get(key),
+    worker = new Worker(ENV.filterWorker);
 
   if (active) {
-    results = controller.get('model').filterBy('zip', _.get(active, 'zip'));
-    controller.set('activeProperty', null); // turn off active property
-  }
+    worker.postMessage({
+      model: controller.get('model'),
+      filterBy: property,
+      match: _.get(active, property)
+    });
 
-  controller.set('results', results);
+    worker.onmessage = function (e) {
+      controller.set('results', e.data);
+    };
+
+    controller.set('activeProperty', null); // turn off active property
+  } else {
+    controller.set('results', null);
+  }
 }
 
 /**
