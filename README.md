@@ -1,34 +1,32 @@
-# Properties in Practice
+# Property Praxis
 
-Properties in Practice visualizes the geography of housing speculation in Detroit for the web.
+Property Praxis is an interactive web application that visually maps the impact of speculative investment in the housing market on Detroit's physical and topographical geography.
 
-## TODO
-- [ ] Complete UI/UX implementation
-- [ ] Add routes for About page & other pages
-- [ ] Create loading & 404 substate routes
+It is a project of the Digital Interactive Research Trajectories (DIRT)Collective. DIRT is:
 
-## Getting Started
+* [Joshua Akers](http://umdearborn.edu/casl/jakers/) (Research)
+* [Alex B. Hill](http://design.alexbhill.org/) (Design/Research)
+* [Aaron Petcoff](http://aaronpetcoff.me/) (Web Design/Development)
 
-This project uses [Ember](http://emberjs.com/). To begin, open your terminal and type,
+More information about the project is available at [http://propertypraxis.tumblr.com](http://propertypraxis.tumblr.com).
 
-```
-npm install -g ember-cli
-```
-
-If you don't have Node installed on your machine, please [follow the instructions here](https://nodejs.org/).
-
-After you install Ember, you can clone this project `cd` to the project directory and run,
-
-```
-npm install
-bower install
-ember server
+### Dependencies
+This project uses [Ember](https://github.com/ember-cli/ember-cli)
+```bash
+$ npm install -g ember
 ```
 
-## Contributing
+### Getting Started
+```bash
+$ git clone https://github.com/alexbhill/project-pip.git && cd project-pip
+$ npm install && bower install
+$ ember serve
+```
+This will serve locally at http://localhost:4200
 
-TKTK Contribution guidelines
-
-## Licensing
-
-TKTK Contribution guidelines
+### Deployments
+This application is served essentially as a static site entirely from GitHub pages. To deploy changes to the `gh-pages` branch, you can run a convenicence script,
+```bash
+$ npm run deploy
+```
+This script runs the `ember build` command for production and pushes a new subtree to `gh-pages`.
