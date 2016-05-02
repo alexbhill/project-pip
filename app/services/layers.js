@@ -4,22 +4,22 @@ export default Ember.Service.extend({
   layers: [{
       id: 0,
       color: '#008aad',
-      description: '< 15',
+      description: '< 50',
       visible: true
     }, {
       id: 1,
       color: '#696684',
-      description: '15–50',
+      description: '50 – 250',
       visible: true
     }, {
       id: 2,
       color: '#ff935e',
-      description: '50–100',
+      description: '250 – 500',
       visible: true
     }, {
       id: 3,
       color: '#ff695e',
-      description: '100–250',
+      description: '>= 500',
       visible: true
     }]
 });
