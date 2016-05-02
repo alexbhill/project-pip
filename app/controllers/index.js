@@ -30,6 +30,10 @@ export default Ember.Controller.extend({
 
     let results = [];
 
+    this.set('activeProperty', null);
+    this.set('activeZip', null);
+    this.set('activeOwner', null);
+
     if (_.size(search) && isZip(search)) {
       results = _.take(model.filter(searchByZip(search)));
     } else if (_.size(search) && !isZip(search)) {

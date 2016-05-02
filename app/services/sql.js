@@ -51,10 +51,10 @@ export default Ember.Service.extend({
   model: `select ${fields.join(', ')} from ${table}`,
 
   activeOwner: function (property) {
-    return `select * from speculator_data where own_id = '${_.get(property, 'owner')}'`;
+    return `select * from ${table} where own_id = '${_.get(property, 'owner')}'`;
   },
 
   activeZip: function (property) {
-    return `select * from speculator_data where propzip = '${_.get(property, 'zip')}'`;
+    return `select * from ${table} where propzip = '${_.get(property, 'zip')}'`;
   }
 });
