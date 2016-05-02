@@ -1,3 +1,5 @@
+$padding: ($spacing + .25);
+
 .legend {
   @include shadow;
   background-color: $brand;
@@ -5,19 +7,21 @@
   color: $text;
   display: none;
   left: 0;
-  margin: 0 0 ($spacing + .25) ($spacing + .25);
+  margin: 0 0 $padding $padding;
   max-width: 15rem;
-  padding: ($spacing + .25) $spacing $spacing;
+  padding: $padding $padding $padding;
   position: absolute;
   z-index: 11;
 
   @media (#{$large}) {
     max-width: rem(300);
-    padding-right: rem(40);
+    padding: $padding rem(40) $padding $padding;
   }
 
-  ul {
+  ul,
+  p {
     margin-top: rem(10);
+    margin-bottom: 0;;
   }
 
   li {
@@ -44,7 +48,7 @@
 .legend-toggle {
   bottom: 0;
   left: 0;
-  margin: 0 0 ($spacing + .25) ($spacing + .25);
+  margin: 0 0 $padding $padding;
   position: absolute;
 }
 
@@ -57,4 +61,18 @@
 .legend-is-toggled {
   @extend %shadow;
   display: inline-block !important;
+}
+
+.link-list {
+  display: flex;
+
+  li:after {
+    content: "|";
+    display: inline-block;
+    padding: 0 rem(5);
+  }
+
+  li:last-child:after {
+    content: "";
+  }
 }
