@@ -93,7 +93,7 @@ export default Ember.Component.extend({
 
     new L.Control.Zoom({ position: 'bottomright' }).addTo(map);
 
-    L.tileLayer(`https://maps.omniscale.net/v2/property-praxis-307ec2e7/style.grayscale/{z}/{x}/{y}.png`)
+    L.tileLayer(`//maps.omniscale.net/v2/${ENV.OMNISCALE_KEY}/style.grayscale/{z}/{x}/{y}.png`)
       .addTo(map);
 
     cartodb.createLayer(map, layerSource)

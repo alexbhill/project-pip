@@ -7,8 +7,7 @@ module.exports = function(environment) {
     baseURL: '/',
     locationType: 'auto',
     STREETVIEW_KEY: 'AIzaSyCfdrkECzxMJ_DMIl5mpkmn00TaPYWtKnk',
-    MAPBOX_TOKEN: 'pk.eyJ1IjoidWdoaXRzYWFyb24iLCJhIjoiY2lmN3NjeDUyMHp4Z3M0bHpiaWtpOWt5OCJ9.5_jbBjvsJoFcwFoSlhxVkQ',
-    MAPBOX_ID: 'ughitsaaron.cif7scvjb0zqas7krsbxgkcv1',
+    OMNISCALE_KEY: environment === 'production' ? 'property-praxis-801ab8e6' : 'property-praxis-307ec2e7',
     cartoWorker: 'assets/fetch-carto.js',
     filterWorker: 'assets/filter-array.js',
     EmberENV: {
