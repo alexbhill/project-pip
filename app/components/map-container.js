@@ -81,7 +81,7 @@ export default Ember.Component.extend({
       sql = controller.get('sqlService').default,
       styles = controller.get('styleService').default,
       layers = controller.get('layers').map(mapLayers(sql, styles)),
-      attr = '&copy; <a href="https://www.mapbox.com/about/maps/"">Mapbox</a>',
+      attr = 'Omniscale <a href="https://maps.omniscale.com">attribution</a>',
 
       layerSource = {
         user_name: 'ughitsaaron',

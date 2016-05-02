@@ -18,6 +18,13 @@ $padding: ($spacing + .25);
     padding: $padding rem(40) $padding $padding;
   }
 
+  a:link,
+  a:visited,
+  a:hover,
+  a:active {
+    color: $text;
+  }
+
   ul,
   p {
     margin-top: rem(10);
