@@ -50,8 +50,8 @@
   }
 
   @media (#{$large}) {
-    .btn {
-      // display: none;
+    &.btn {
+      display: none;
     }
   }
 }

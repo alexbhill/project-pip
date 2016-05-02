@@ -14,14 +14,14 @@
   .close {
     position: absolute;
     right: $right-offset;
-    top: rem(10);
+    top: rem(13);
     z-index: 10;
   }
 
   &.panel-on {
     transform: translate3d(0, 0, 0);
     transition: transform 150ms ease;
-    z-index: 11;
+    z-index: 21;
   }
 
   @media (#{$large}) {

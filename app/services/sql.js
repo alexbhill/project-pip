@@ -36,23 +36,19 @@ import _ from 'npm:lodash';
  * taxstatus - property tax status
  * the_geom_webmercator - parcel shape data for carto
  * ward - city's ward
- * x - latitude
- * y - longitude
+ * xcoord - latitude
+ * ycoord - longitude
  * zipcount - number of rows with this `propzip`
  */
 
+const fields = ['cartodb_id', 'count', 'layer', 'own_id', 'ownername1', 'ownercity', 'ownerstate', 'ownerstr', 'ownerzip', 'propaddr', 'propzip', 'xcoord', 'ycoord', 'zipcount'],
+   user = 'ughitsaaron',
+   table = 'parcels';
+
 export default Ember.Service.extend({
-  prefix: 'http://eightbitriot.cartodb.com/api/v2/sql?q=',
-
-  default: 'select * from speculator_data',
-
-  fields: ['cartodb_id', 'count', 'layer', 'own_id', 'ownername1', 'ownercity', 'ownerstate', 'ownerstr', 'ownerzip', 'propaddr', 'propzip', 'x', 'y', 'zipcount'],
-
-  model: function (fields) {
-    // only select fields from db as necessary
-    // for the model
-    return `select ${fields.join(', ')} from speculator_data`;
-  },
+  prefix: `http://${user}.cartodb.com/api/v2/sql?q=`,
+  default: `select * from ${table}`,
+  model: `select ${fields.join(', ')} from ${table}`,
 
   activeOwner: function (property) {
     return `select * from speculator_data where own_id = '${_.get(property, 'owner')}'`;

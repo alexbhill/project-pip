@@ -15,7 +15,7 @@ $max-height: rem(368);
     position: absolute;
     right: 0;
     top: 0;
-    width: auto;
+    width: 100%;
     z-index: 2;
   }
 
@@ -26,7 +26,6 @@ $max-height: rem(368);
       display: block;
       height: auto;
       position: relative;
-      width: 100%;
     }
   }
 }
@@ -40,6 +39,7 @@ $max-height: rem(368);
   background-color: #e4e3df;
   height: $max-height;
   width: 100%;
+  position: relative;
 }
 
 .streetview .loading-overlay {

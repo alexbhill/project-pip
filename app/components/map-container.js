@@ -84,7 +84,7 @@ export default Ember.Component.extend({
       attr = '&copy; <a href="https://www.mapbox.com/about/maps/"">Mapbox</a>',
 
       layerSource = {
-        user_name: 'eightbitriot',
+        user_name: 'ughitsaaron',
         type: 'cartodb',
         cartodb_logo: false,
         attribution: attr,

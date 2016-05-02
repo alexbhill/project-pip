@@ -4,12 +4,13 @@
 </div>
 
 <div class="page">
-  {{#map-container search=search activeProperty=activeProperty activeOwner=activeOwner activeZip=activeZip layers=layers model=parcels}}
+  {{#map-container search=search activeProperty=activeProperty activeOwner=activeOwner activeZip=activeZip layers=layers model=model}}
   {{/map-container}}
 
   <a class="search-btn btn" tabindex="0" {{ action "toggleSearch" preventDefault=true}} href="#"><svg><use xlink:href="#icon-search"></use></svg></a>
 
   <div class="panel panel-on {{if activeOwner.id "has-active-owner " ""}}{{if activeZip.id "has-active-zip " ""}}{{if activeProperty.id "has-active-property " ""}}{{if results.length "has-results" ""}}">
+    <a tabindex="0" class="close" {{ action "clear" on="click" }} href="#"><svg><use xlink:href="#icon-close"></use></svg></a>
     {{#owner-details activeOwner=activeOwner}}{{/owner-details}}
 
     {{#zip-details activeZip=activeZip}}{{/zip-details}}

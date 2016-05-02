@@ -7,7 +7,7 @@ export default Ember.Route.extend({
 
   model() {
     const sql = this.get('sqlService'),
-      query = sql.prefix + encodeURIComponent(sql.model(sql.fields)),
+      query = sql.prefix + encodeURIComponent(sql.model),
       worker = new Worker(ENV.cartoWorker);
 
     return new Ember.RSVP.Promise(function (resolve) {
@@ -21,12 +21,5 @@ export default Ember.Route.extend({
         resolve(e.data);
       };
     });
-  },
-
-  afterModel() {
-    // always keep `model` clean
-    // modify `parcels` in the controller
-    // based on active & hidden layers
-    this.controllerFor('index').set('parcels', this.modelFor('index'));
   }
 });

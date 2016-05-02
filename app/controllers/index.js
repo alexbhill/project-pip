@@ -10,7 +10,7 @@ import ENV from 'property-praxis/config/environment';
 import _ from 'npm:lodash';
 
 export default Ember.Controller.extend({
-  legendIsToggled: false,
+  legendIsToggled: true,
   searchIsToggled: false,
 
   // array of layer data
@@ -18,26 +18,14 @@ export default Ember.Controller.extend({
   layers: Ember.computed.reads('layerService.layers'),
 
   /**
-   * change the data available in our model
-   * based on visibility of layers
-   * @observes layers.@each.visible
-   */
-  layerObserver: Ember.observer('layers.@each.visible', function () {
-    let layers = this.get('layers').filterBy('visible').mapBy('id'), // e.g. [0, 2, 4]
-      model = this.get('model').filter(item => _.includes(layers, _.get(item, 'layer')));
-
-    // set our new model
-    this.set('parcels', model);
-  }),
-
-  /**
    * set results based on search
    * matches either property.address or property.owner
    * @observes search
    */
-  searchObserver: Ember.observer('search', function () {
+  searchObserver: Ember.observer('search', function (ctrl) {
     const search = this.get('search'),
-      model = this.get('parcels'),
+      layers = this.get('layers').filterBy('visible').mapBy('id'),
+      model = _.filter(this.get('model'), isVisible(layers)),
       max = 10; // number of results to return
 
     let results = [];
@@ -95,7 +83,7 @@ export default Ember.Controller.extend({
  * @param {String} search - current search value
  * @return {callback} returns a boolean based on match
  */
-function searchMatches(search) {
+function searchMatches(search, layers) {
   const match = search.toUpperCase();
 
   return function (value) {
@@ -122,6 +110,12 @@ function propertyHandler(controller, key) {
   }
 }
 
+/**
+ * handles all observers in controller
+ * @param  {string} property   - key being watched
+ * @param  {class} controller - this ember controller
+ * @param  {string} key
+ */
 function observerHandler(property, controller, key) {
   const active = controller.get(key),
     worker = new Worker(ENV.filterWorker);
@@ -154,4 +148,15 @@ function isZip(search) {
     length = _.size(String(search));
 
   return isNumber && _.startsWith(String(search), prefix) && length > prefix.length;
+}
+
+/**
+ * item is in layer marked visible
+ * @param  {[]}  layers
+ * @return {Boolean}
+ */
+function isVisible(layers) {
+  return function (item) {
+    return _.includes(layers, _.get(item, 'layer'));
+  };
 }
