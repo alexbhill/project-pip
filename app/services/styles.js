@@ -16,6 +16,6 @@ export default Ember.Service.extend({
     '\tpolygon-fill: #ff935e;\n' +
   '}\n' +
   '#parcels [ layer = 3 ] {\n' +
-    '\tpolygon-fill: #ff695e;\n' +
+    '\tpolygon-fill: #ef554a;\n' +
   '}'
 });

@@ -18,7 +18,7 @@ export default Ember.Service.extend({
       visible: true
     }, {
       id: 3,
-      color: '#ff695e',
+      color: '#ef554a',
       description: '>= 500',
       visible: true
     }]
