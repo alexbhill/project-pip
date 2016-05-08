@@ -12,6 +12,7 @@ export default Ember.Route.extend({
     const sql = this.get('sqlService'),
       query = sql.prefix + encodeURIComponent(sql.model),
       worker = new Worker(ENV.cartoWorker),
+      visited = localStorage.getItem('visited') || false,
       controller = this.controllerFor('index');
 
     // fetch ajax & process data
@@ -22,6 +23,16 @@ export default Ember.Route.extend({
       // resolve the promise when the worker
       // is done
       controller.set('model', e.data);
+
+      if (!visited) {
+        controller.set('activeProperty', controller.get('model').findBy('id', 50385));
+      }
     };
+
+    if (!visited) {
+      controller.set('legendIsToggled', true);
+    }
+
+    localStorage.setItem('visited', true);
   }
 });

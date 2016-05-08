@@ -10,7 +10,7 @@ import ENV from 'property-praxis/config/environment';
 import _ from 'npm:lodash';
 
 export default Ember.Controller.extend({
-  legendIsToggled: true,
+  legendIsToggled: false,
   searchIsToggled: false,
 
   // array of layer data
