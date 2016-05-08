@@ -91,7 +91,7 @@ function searchMatches(search, layers) {
   const match = search.toUpperCase();
 
   return function (value) {
-    const owner = _.get(value, 'owner').toUpperCase(),
+    const owner = _.get(value, 'owner').join(' ').toUpperCase(),
       property = _.get(value, 'address').toUpperCase();
 
     return _.includes(owner, match) || _.includes(property, match);

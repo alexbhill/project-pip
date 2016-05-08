@@ -1,4 +1,8 @@
-<p class="owner-name">{{format-details activeOwner.owner}} details:</p>
+<p class="owner-name" itemscope itemtype="http://schema.org/Person">
+  {{#each activeOwner.owner as |name|}}
+    <span itemprop="name">{{format-details name}}</span>
+  {{/each}} details:
+</p>
 <p class="owner-count">Total properties owned: {{format-details activeOwner.count}}</p>
 <p>Address:</p>
 <address>

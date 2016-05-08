@@ -15,7 +15,7 @@ function mapPayload(item) {
   return {
     id: parseInt(item.cartodb_id),
     type: 'property',
-    owner: getOwnerName(item),
+    owner: item.own_id.split(','),
     address: item.propaddr,
     zip: item.propzip,
     latitude: item.xcoord,
@@ -43,10 +43,4 @@ function getJSON(url, cb) {
       }
     }
   };
-}
-
-function getOwnerName(item) {
-  return item.own_id === 'UNIDENTIFIED'
-    ? item.ownername1
-    : item.own_id
 }

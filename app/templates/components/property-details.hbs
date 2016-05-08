@@ -1,3 +1,8 @@
-<p class="property-click" {{action "setActiveOwner" activeProperty}}>{{format-details activeProperty.owner}} {{#unless isUnidentified }}<svg><use xlink:href="#icon-info"></use></svg>{{/unless}}</p>
+<p class="property-click" {{action "setActiveOwner" activeProperty}} itemscope itemtype="http://schema.org/Person">
+  {{#each activeProperty.owner as |name|}}
+    <span itemprop="name">{{format-details name}}</span>
+  {{/each}}
+  <svg><use xlink:href="#icon-info"></use></svg>
+</p>
 <p>{{format-details activeProperty.address}}</p>
 <p class="property-click" {{action "setActiveZip" activeProperty}}>Detroit, MI {{format-details activeProperty.zip}}<svg><use xlink:href="#icon-info"></use></svg></p>

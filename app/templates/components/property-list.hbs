@@ -5,7 +5,11 @@
     </li>
   {{else}}
     <li class="property" {{action "setActiveProperty" property}} itemscope itemtype="http://schema.org/Property">
-      <p itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{format-details property.owner}}</span></p>
+      <p itemscope itemtype="http://schema.org/Person">
+        {{#each property.owner as |name|}}
+          <span itemprop="name">{{format-details name}}</span>
+        {{/each}}
+      </p>
       <p itemscope itemtype="http://schema.org/PostalAddress"><span itemprop="streetAddress">{{format-details property.address}}</span></p>
     </li>
   {{/if}}

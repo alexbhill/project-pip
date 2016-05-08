@@ -52,3 +52,12 @@
     }
   }
 }
+
+.panel-item span[itemprop="name"]:after {
+  display: inline-block;
+  content: ', '
+}
+
+.panel-item span[itemprop="name"]:last-of-type:after {
+  content: '';
+}
