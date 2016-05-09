@@ -22,7 +22,7 @@ export default Ember.Service.extend({
     '\tpolygon-fill: #ef554a;\n' +
     '\tline-color: #99362F;\n' +
   '}\n' +
-  '[ zoom < 15 ] {\n' +
+  '#parcels [ zoom < 15 ] {\n' +
     '\tline-width: 8;\n' +
   '}'
 });
