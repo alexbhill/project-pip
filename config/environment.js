@@ -7,7 +7,7 @@ module.exports = function(environment) {
     baseURL: '/',
     locationType: 'auto',
     STREETVIEW_KEY: 'AIzaSyCfdrkECzxMJ_DMIl5mpkmn00TaPYWtKnk',
-    OMNISCALE_KEY: environment === 'production' ? 'property-praxis-801ab8e6' : 'property-praxis-307ec2e7',
+    OMNISCALE_KEY: 'property-praxis-801ab8e6',
     cartoWorker: 'assets/fetch-carto.js',
     filterWorker: 'assets/filter-array.js',
     EmberENV: {

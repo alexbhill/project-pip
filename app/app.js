@@ -10,6 +10,16 @@ import config from './config/environment';
 
 var App;
 
+console.log(`Property Praxis is a project of the Digital Interactive Research Trajectories (DIRT) collective.
+
+  We are:
+
+  * Joshua Akers (Research) <http://umdearborn.edu/casl/jakers/>
+  * Alex B. Hill (Design/Research) <http://design.alexbhill.org/>
+  * Aaron Petcoff (Web Design/Development) <http://aaronpetcoff.me/>
+
+  Having issues? Report them at https://github.com/alexbhill/project-pip/issues`);
+
 Ember.MODEL_FACTORY_INJECTIONS = true;
 
 App = Ember.Application.extend({
@@ -21,3 +31,7 @@ App = Ember.Application.extend({
 loadInitializers(App, config.modulePrefix);
 
 export default App;
+
+function ready() {
+  console.log(figlet.textSync('Property Praxis'));
+}
