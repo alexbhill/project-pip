@@ -16,6 +16,7 @@ function mapPayload(item) {
     id: parseInt(item.cartodb_id),
     type: 'property',
     owner: item.own_id.split(','),
+    alias: item.ownername1,
     address: item.propaddr,
     zip: item.propzip,
     latitude: item.xcoord,

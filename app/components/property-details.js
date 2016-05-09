@@ -8,7 +8,13 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   classNames: ['property', 'panel-item', 'property-details'],
 
-  isUnidentified: Ember.computed.equal('activeProperty.owner', 'UNIDENTIFIED'),
+  isLLC: Ember.computed('activeProperty', function () {
+    const active = this.get('activeProperty'),
+      id = _.words(_.get(active, 'owner')),
+      alias = _.words(_.get(active, 'alias'));
+
+    return _.difference(id, alias).length && !_.intersection(alias, id).length;
+  }),
 
   actions: {
     setActiveOwner(property) {

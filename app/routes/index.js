@@ -13,7 +13,8 @@ export default Ember.Route.extend({
       query = sql.prefix + encodeURIComponent(sql.model),
       worker = new Worker(ENV.cartoWorker),
       visited = localStorage.getItem('visited') || false,
-      controller = this.controllerFor('index');
+      controller = this.controllerFor('index'),
+      initParcel = 44710; // 7714 Foster
 
     // fetch ajax & process data
     // in a web worker
@@ -25,7 +26,7 @@ export default Ember.Route.extend({
       controller.set('model', e.data);
 
       if (!visited) {
-        controller.set('activeProperty', controller.get('model').findBy('id', 50385));
+        controller.set('activeProperty', controller.get('model').findBy('id', initParcel));
       }
     };
 
