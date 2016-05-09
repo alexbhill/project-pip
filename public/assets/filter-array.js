@@ -5,6 +5,6 @@ onmessage = function (e) {
     key = e.data.filterBy;
 
   postMessage(model.filter(function (item) {
-    return item[key] === match;
+    return match.length ? item[key][0] === match[0] : item[key] === match;
   }));
 };

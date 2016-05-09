@@ -4,6 +4,7 @@
  * of a property selected by the user
  */
 import Ember from 'ember';
+import _ from 'npm:lodash';
 
 export default Ember.Component.extend({
   classNames: ['property', 'panel-item', 'property-details'],

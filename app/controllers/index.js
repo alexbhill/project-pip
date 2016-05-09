@@ -22,7 +22,7 @@ export default Ember.Controller.extend({
    * matches either property.address or property.owner
    * @observes search
    */
-  searchObserver: Ember.observer('search', function (ctrl) {
+  searchObserver: Ember.observer('search', function () {
     const search = this.get('search'),
       layers = this.get('layers').filterBy('visible').mapBy('id'),
       model = _.filter(this.get('model'), isVisible(layers)),
