@@ -177,6 +177,7 @@ function featureClick(controller) {
       active = controller.get('model').findBy('id', id);
 
     controller.set('activeProperty', active);
+    ga('send', 'event', 'parcel', 'click', id);
   };
 }
 

@@ -20,10 +20,12 @@ export default Ember.Component.extend({
   actions: {
     setActiveOwner(property) {
       this.set('activeOwner', property);
+      ga('send', 'event', 'owner-info', 'click', property.id);
     },
 
     setActiveZip(property) {
       this.set('activeZip', property);
+      ga('send', 'event', 'zip-info', 'click', property.id);
     },
 
     clear() {

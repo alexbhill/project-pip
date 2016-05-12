@@ -12,6 +12,7 @@ export default Ember.Component.extend({
   actions: {
     setActiveProperty(property) {
       this.set('activeProperty', property);
+      ga('send', 'event', 'parcel', 'click', property.id);
     },
 
     setActiveZip(property) {
