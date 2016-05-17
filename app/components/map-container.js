@@ -81,7 +81,7 @@ export default Ember.Component.extend({
       sql = controller.get('sqlService').default,
       styles = controller.get('styleService').default,
       layers = controller.get('layers').map(mapLayers(sql, styles)),
-      attr = 'Omniscale <a href="https://maps.omniscale.com">attribution</a>',
+      attr = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 
       layerSource = {
         user_name: 'ughitsaaron',
@@ -93,7 +93,7 @@ export default Ember.Component.extend({
 
     new L.Control.Zoom({ position: 'bottomright' }).addTo(map);
 
-    L.tileLayer(`//maps.omniscale.net/v2/${ENV.OMNISCALE_KEY}/style.grayscale/{z}/{x}/{y}.png`)
+    L.tileLayer(`//{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png`)
       .addTo(map);
 
     cartodb.createLayer(map, layerSource)
