@@ -14,7 +14,15 @@ export default Ember.Route.extend({
       worker = new Worker(ENV.cartoWorker),
       visited = localStorage.getItem('visited') || false,
       controller = this.controllerFor('index'),
-      initParcel = 44710; // 7714 Foster
+
+      /*––––––––––––––––––––––––––––––––––––––|
+      | NOTE: You this is the CartoDB ID      |
+      | of the intially set active property   |
+      | on an indivudal user's first visit.   |
+      | You can replace this value w/ any     |
+      | valid CartoDB ID                      |
+      –––––––––––––––––––––––––––––––––––––––*/
+      initParcel = 44710; // Address: 7714 Foster
 
     // fetch ajax & process data
     // in a web worker

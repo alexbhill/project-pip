@@ -10,6 +10,8 @@ It is a project of the Digital Interactive Research Trajectories (DIRT)Collectiv
 
 More information about the project is available at [http://propertypraxis.tumblr.com](http://propertypraxis.tumblr.com).
 
+For information about building your own custom Property Praxis map for visualizing property speculation data, see the section on [customization](#customizing) below.
+
 ### Dependencies
 This project uses [Ember](https://github.com/ember-cli/ember-cli)
 ```bash
@@ -30,3 +32,13 @@ This application is served essentially as a static site entirely from GitHub pag
 $ npm run deploy
 ```
 This script runs the `ember build` command for production and pushes a new subtree to `gh-pages`.
+
+## Customizing
+This repository can be forked and customized with your own data. The only requirement is that you host your data on [CartoDB](http://cartodb.com).
+
+### Steps
+1. Fork this repository
+2. Open `app/config/enviroment.js` and replace the values for `USERNAME`, `STREETVIEW_KEY`, and `TABLE_NAME`.
+3. Make sure the values for your CartoDB columns map the columns defined in `/public/assets/fetch-carto.js`.
+4. Customize `initParcel` in `app/rotues/index.js` with a valid CartoDB id from your data.
+5. Run the deploy script with `$ npm run deploy`.

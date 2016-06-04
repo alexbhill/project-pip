@@ -8,26 +8,36 @@ onmessage = function(e) {
   });
 };
 
-// see notes in sql service
-// regarding our carto table
-// columns for descriptions
 function mapPayload(item) {
+  /*
+  * Additional data used by CartoDB in table
+  * the_geom - geometric data for cartodb
+  * shape_star - parcel shape data
+  * shape_stle - parcel shape data
+  * the_geom_webmercator - parcel shape data for carto
+  */
+
   return {
-    id: parseInt(item.cartodb_id),
-    type: 'property',
-    owner: item.own_id.split(','),
-    alias: item.ownername1,
-    address: item.propaddr,
-    zip: item.propzip,
-    latitude: item.xcoord,
-    longitude: item.ycoord,
-    ownerStreet: item.ownerstr,
-    ownerCity: item.ownercity,
-    ownerState: item.ownerstate,
-    ownerZip: item.ownerzip,
-    count: item.count,
-    zipCount: item.zipcount,
-    layer: item.layer,
+    /*––––––––––––––––––––––––––––––––––––|
+    | NOTE:                               |
+    | You can customize the values here   |
+    | to match your data if necessary.    |
+    –––––––––––––––––––––––––––––––––––––*/
+    id: parseInt(item.cartodb_id), // unique id for cartodb
+    type: 'property', // a string describing the object
+    owner: item.own_id.split(','), // name of the owner of this property or the managing LLC
+    alias: item.ownername1, // owner or managing llc
+    address: item.propaddr, // address of property
+    zip: item.propzip, // property zip
+    latitude: item.xcoord, // latitude
+    longitude: item.ycoord, // longitude
+    ownerStreet: item.ownerstr, // owner's business address street
+    ownerCity: item.ownercity, // owner's business address city
+    ownerState: item.ownerstate, // owner's business address state
+    ownerZip: item.ownerzip, // owner's business address zip
+    count: item.count, // number of rows with this `own_id`
+    zipCount: item.zipcount, // number of rows with this `propzip`
+    layer: item.layer, // layers 0 - 5 depending on value of `count`
     isActive: false
   };
 }

@@ -84,7 +84,7 @@ export default Ember.Component.extend({
       attr = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 
       layerSource = {
-        user_name: 'ughitsaaron',
+        user_name: ENV.USERNAME,
         type: 'cartodb',
         cartodb_logo: false,
         attribution: attr,

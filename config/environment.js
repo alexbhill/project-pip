@@ -2,11 +2,19 @@
 
 module.exports = function(environment) {
   var ENV = {
+    /*––––––––––––––––––––––––––––––––|
+    | NOTE: Replace these three lines |
+    | with your own information       |
+    –––––––––––––––––––––––––––––––––*/
+    USERNAME: 'ughitsaaron', // your cartodb username
+    STREETVIEW_KEY: 'AIzaSyCfdrkECzxMJ_DMIl5mpkmn00TaPYWtKnk', // your google api key for streetview
+    TABLE_NAME: 'parcels',
+
+    // no need to touch these
     modulePrefix: 'property-praxis',
     environment: environment,
     baseURL: '/',
     locationType: 'auto',
-    STREETVIEW_KEY: 'AIzaSyCfdrkECzxMJ_DMIl5mpkmn00TaPYWtKnk',
     cartoWorker: 'assets/fetch-carto.js',
     filterWorker: 'assets/filter-array.js',
     EmberENV: {
