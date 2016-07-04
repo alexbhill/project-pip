@@ -1,0 +1,12 @@
+.owner {
+  padding: rem(16);
+  border-bottom: rem(2) solid $brand-secondary;
+
+  p {
+    margin: rem(8) 0;
+  }
+
+  p:first-of-type {
+    margin-top: 0;
+  }
+}

@@ -2,33 +2,29 @@ $padding: ($spacing + .25);
 
 .legend {
   @include shadow;
-  background-color: $brand;
-  bottom: 0;
-  color: $text;
-  display: none;
-  left: 0;
-  margin: 0 0 $padding $padding;
-  max-width: 15rem;
-  padding: $padding $padding $padding;
   position: absolute;
   z-index: 11;
+  bottom: 0;
+  left: 0;
+  display: none;
+  max-width: 15rem;
+  margin: 0 0 $padding $padding;
+  padding: $padding $padding $padding;
+  color: $text;
+  background-color: $brand;
 
   @media (#{$large}) {
     max-width: rem(300);
     padding: $padding rem(40) $padding $padding;
   }
 
-  a:link,
-  a:visited,
-  a:hover,
-  a:active {
+  a:link, a:visited, a:hover, a:active {
     color: $text;
   }
 
-  ul,
-  p {
+  ul, p {
     margin-top: rem(10);
-    margin-bottom: 0;;
+    margin-bottom: 0;
   }
 
   li {
@@ -36,16 +32,16 @@ $padding: ($spacing + .25);
   }
 
   .close {
-    fill: $text;
     position: absolute;
-    right: $spacing + .25;
     top: $spacing + .25;
+    right: $spacing + .25;
+    fill: $text;
   }
 }
 
 .legend-marker-color {
-  height: auto;
   width: auto;
+  height: auto;
 }
 
 .legend-label {
@@ -53,33 +49,33 @@ $padding: ($spacing + .25);
 }
 
 .legend-toggle {
+  position: absolute;
   bottom: 0;
   left: 0;
   margin: 0 0 $padding $padding;
-  position: absolute;
 }
 
 .legend-icon {
   display: inline-block;
-  fill: $text;
   width: rem(16);
+  fill: $text;
 }
 
 .legend-is-toggled {
-  @extend %shadow;
   display: inline-block !important;
+  @extend %shadow;
 }
 
 .link-list {
   display: flex;
 
   li:after {
-    content: "|";
     display: inline-block;
     padding: 0 rem(5);
+    content: '|';
   }
 
   li:last-child:after {
-    content: "";
+    content: '';
   }
 }

@@ -5,7 +5,9 @@
     "-Promise",
     "Promise",
     "cartodb",
-    "L"
+    "L",
+    "ga",
+    "$"
   ],
   "globals": {
     "cartodb": true,

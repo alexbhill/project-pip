@@ -1,16 +1,16 @@
+{{#if showMessage}}
+  <li class="no-results-message">No results.</li>
+{{/if}}
+
 {{#each results as |property|}}
-  {{#if (is-zip search)}}
-    <li class="property" {{action "setActiveZip" property}} itemscope itemtype="http://schema.org/Property">
-      <p>See speculation in {{property.zip}}</p>
-    </li>
-  {{else}}
-    <li class="property" {{action "setActiveProperty" property}} itemscope itemtype="http://schema.org/Property">
-      <p itemscope itemtype="http://schema.org/Person">
-        {{#each property.owner as |name|}}
-          <span itemprop="name">{{format-details name}}</span>
+  <li class="property">
+    {{#link-to 'index.parcel' property.id}}
+      <p>
+        {{#each property.names as |name|}}
+          <span class="name">{{format-details name}}</span>
         {{/each}}
       </p>
-      <p itemscope itemtype="http://schema.org/PostalAddress"><span itemprop="streetAddress">{{format-details property.address}}</span></p>
-    </li>
-  {{/if}}
+      <p><span itemprop="streetAddress">{{format-details property.address}}</span></p>
+    {{/link-to}}
+  </li>
 {{/each}}

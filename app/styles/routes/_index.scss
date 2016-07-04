@@ -1,0 +1,78 @@
+.search {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  display: block;
+  width: 100%;
+  @include shadow;
+
+  input {
+    line-height: rem(50);
+    position: relative;
+    width: 100%;
+    text-indent: .6rem;
+    color: $text;
+    border: 0;
+    background-color: transparent;
+  }
+
+  .close {
+    position: absolute;
+    top: .875rem;
+    right: $right-offset;
+  }
+
+  @media (#{$large}) {
+    position: relative;
+    display: block;
+    max-width: 25rem;
+    margin: 1rem 0 0 1rem;
+    box-shadow: $shadow;
+  }
+}
+
+.panel {
+  position: absolute;
+  z-index: 12;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  color: $text;
+  background-color: $brand;
+  -webkit-overflow-scrolling: touch;
+
+  a {
+    text-decoration: none;
+    color: white;
+  }
+
+  .icon-info {
+    display: inline-block;
+    width: rem(16);
+    fill: $text;
+  }
+
+  .close {
+    position: absolute;
+    z-index: 10;
+    top: rem(13);
+    right: $right-offset;
+  }
+
+  @media (#{$large}) {
+    position: relative;
+    z-index: 1;
+    max-width: 25rem;
+    margin: 0 0 0 1rem;
+    box-shadow: $brand-border, $shadow;
+  }
+}
+
+.panel-item .name:after {
+  display: inline-block;
+  content: ', ';
+}
+
+.panel-item .name:last-of-type:after {
+  content: '';
+}

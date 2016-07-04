@@ -31,7 +31,3 @@ App = Ember.Application.extend({
 loadInitializers(App, config.modulePrefix);
 
 export default App;
-
-function ready() {
-  console.log(figlet.textSync('Property Praxis'));
-}

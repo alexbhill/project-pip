@@ -6,7 +6,10 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  this.route('/');
+  this.route('index', { path: '/' }, function() {
+    this.route('parcel', { path: '/parcel/:id' });
+    this.route('owner', { path: '/owner/:name' });
+  });
 });
 
 export default Router;

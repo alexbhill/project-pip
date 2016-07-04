@@ -1,0 +1,12 @@
+<div class="owner panel-item">
+  <p class="owner-name">
+    {{#each model.names as |name|}}
+      <span class="name">{{format-details name}}</span>
+    {{/each}}
+  </p>
+  <p class="owner-count">{{model.total}} total properties</p>
+  <address>
+    <p class="owner-street">{{format-details model.street}}</p>
+    <p class="owner-city-state">{{format-details model.city}}, {{model.state}} {{model.zip}}</p>
+  </address>
+</div>
