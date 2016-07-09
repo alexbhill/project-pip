@@ -8,10 +8,5 @@ export default Ember.Component.extend({
     'hasSearch:has-search:no-search'
   ],
 
-  hasResults: Ember.computed.notEmpty('results'),
-  hasSearch: Ember.computed.notEmpty('search'),
-
-  showMessage: Ember.computed('hasResults', 'hasSearch', function () {
-    return this.get('hasSearch') && !this.get('hasResults');
-  })
+  hasResults: Ember.computed.notEmpty('results')
 });

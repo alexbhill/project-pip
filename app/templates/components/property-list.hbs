@@ -1,7 +1,3 @@
-{{#if showMessage}}
-  <li class="no-results-message">No results.</li>
-{{/if}}
-
 {{#each results as |property|}}
   <li class="property">
     {{#link-to 'index.parcel' property.id}}
