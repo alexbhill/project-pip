@@ -1,19 +1,19 @@
 #map {
-  bottom: 0;
-  cursor: pointer;
-  height: 100%;
-  left: 0;
   position: absolute;
-  right: 0;
-  top: 0;
-  width: 100%;
   z-index: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
 }
 
 #map .leaflet-bar a {
-  background-color: $brand;
-  border-bottom: none;
   color: $text;
+  border-bottom: none;
+  background-color: $brand;
 }
 
 .active-property-marker {

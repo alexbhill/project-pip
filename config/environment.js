@@ -1,22 +1,60 @@
 /* jshint node: true */
 
+/**
+ * NOTE: ** ONLY TOUCH THE PROPERTIES MARKED WITH NOTES **
+ *
+ * This file can be used to customize forked Property Praxis projects.
+ *
+ * Strings like 'cartodb_id', 'propaddr', other column names, etc. should
+ * only appear here.
+ *
+ * This file is also used for customizing and managing Ember's build
+ * processes. Altering other properties without knowing what you're doing
+ * can break the build.
+ */
+
 module.exports = function(environment) {
   var ENV = {
-    /*––––––––––––––––––––––––––––––––|
-    | NOTE: Replace these three lines |
-    | with your own information       |
-    –––––––––––––––––––––––––––––––––*/
+    /*––––––––––––––––––––––––––––––––---|
+    | NOTE: Replace these six properties |
+    | with your own information          |
+    –––––––––––––––––––––––––––––––––---*/
     USERNAME: 'ughitsaaron', // your cartodb username
     STREETVIEW_KEY: 'AIzaSyCfdrkECzxMJ_DMIl5mpkmn00TaPYWtKnk', // your google api key for streetview
     TABLE_NAME: 'parcels',
+    FIRST_VISIT_PARCEL_ID: 50517, // if you want your project to init
+                                  // with a loaded parcel on a user's
+                                  // first visit
+    INIT_CENTER: [42.3653, -83.0693], // Detroit
+    INIT_ZOOM: 14,
 
-    // no need to touch these
+    /*––––––––––––––––––––––––––––––––|
+    | NOTE: It's best if you rename   |
+    | the columns in your Carto table |
+    | to conform to these mappings,   |
+    | but you can map your columns    |
+    | to our keys here                |
+    –––––––––––––––––––––––––––––––––*/
+    DATA_MAPPINGS: {
+      id: 'cartodb_id', // generally don't need to change this
+      owner: 'own_id', // name of owner
+      alias: 'ownername1', // aliased name of owner, i.e., an llc or company
+      address: 'propaddr', // address of property
+      zip: 'propzip', // zip of property
+      ownerStreet: 'ownerstr', // street address of owner
+      ownerCity: 'ownercity', // city of owner
+      ownerState: 'ownerstate', // state of owner
+      total: 'total_rows', // generally won't need to change this
+      layer: 'layer', // key for count layer
+      latitude: 'xcoord', // latitude of parcel centeroid
+      longitude: 'ycoord' // longitude of parcel centeroid
+    },
+
+    // NOTE: DON'T TOUCH THESE
     modulePrefix: 'property-praxis',
     environment: environment,
     baseURL: '/',
     locationType: 'auto',
-    cartoWorker: 'assets/fetch-carto.js',
-    filterWorker: 'assets/filter-array.js',
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build

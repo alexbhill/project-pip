@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import ENV from 'property-praxis/config/environment';
-import _ from 'npm:lodash';
 
 export default Ember.Component.extend({
   src: null,
@@ -11,37 +10,32 @@ export default Ember.Component.extend({
   classNameBindings: ['isLoaded'],
   isLoaded: false,
 
-  activeObserver: Ember.observer('activeProperty', function () {
-    let active = this.get('activeProperty'),
-      coordinates = active && [_.get(active, 'longitude'), _.get(active, 'latitude')];
+  loadStreetView: function () {
+    const controller = this,
+      geometry = controller.get('geometry'),
+      img = controller.$().find('img');
 
-    if (_.size(coordinates) && _.every(coordinates, _.isNumber)) {
-      this.set('src', setSrc(coordinates));
-      this.set('href', setHref(coordinates));
-    } else {
-      this.set('src', null);
-      this.set('href', null);
+    controller.set('isLoaded', false); // isLoaded to false on change
+    controller.set('href', setHref(geometry));
+
+    if (window.getComputedStyle(img[0]).display !== 'none') {
+      controller.set('src', setSrc(geometry));
+
+      img.one('load', function () {
+        controller.set('isLoaded', true);
+      });
     }
-  }),
+  },
 
-  /**
-   * handleLoad also observes coordinates. on change
-   * listen once for a load event on the image and
-   * toggle isLoaded
-   */
-  handleLoad: Ember.observer('activeProperty', function(controller) {
-    this.set('isLoaded', false); // re-init isLoaded to false on change
-
-    this.$().find('img').one('load', function() {
-      controller.set('isLoaded', true);
-    });
-  })
+  didRender() {
+    Ember.run.scheduleOnce('afterRender', this, 'loadStreetView');
+  }
 });
 
-function setSrc(coordinates) {
-  return `https://maps.googleapis.com/maps/api/streetview?size=640x640&location=${coordinates.join(',')}&pitch=10&key=${ENV.STREETVIEW_KEY}`;
+function setSrc(geometry) {
+  return `https://maps.googleapis.com/maps/api/streetview?size=640x640&location=${geometry.join(',')}&pitch=10&key=${ENV.STREETVIEW_KEY}`;
 }
 
-function setHref(coordinates) {
-  return `http://maps.google.com/?cbll=${coordinates.join(',')}&layer=c`;
+function setHref(geometry) {
+  return `http://maps.google.com/?cbll=${geometry.join(',')}&layer=c`;
 }

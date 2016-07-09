@@ -1,110 +1,96 @@
-/**
- * map-container.js
- * This is the map component. It controls
- * interactivity and displays on the map.
- *
- * The map itself is Leaflet.
- *
- * Base layer is Mapbox tiles.
- *
- * Feature layer is cartoDb
- */
 import Ember from 'ember';
-import _ from 'npm:lodash';
+import each from 'npm:lodash/each';
 import ENV from 'property-praxis/config/environment';
 
-export default Ember.Component.extend({
-  center: [42.3653, -83.0693], // Detroit
+const table = ENV.TABLE_NAME,
+  mappings = ENV.DATA_MAPPINGS,
+  attr = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
-  sqlService: Ember.inject.service('sql'),
+export default Ember.Component.extend({
+  elementId: 'map',
+
   styleService: Ember.inject.service('styles'),
 
-  /**
-   * observes user toggling of feature layers.
-   * calls #toggleLayers on change.
-   * @observes layers.@each.visible
-   */
-  layersObserver: Ember.observer('layers.@each.visible', function () {
-    const layers = this.get('layers'),
-      sublayers = this.get('viz').getSubLayers();
-
-    _.each(layers, toggleLayers(sublayers));
-  }),
-
-  /**
-   * pans the map to the new active property latlng
-   * @observes activeProperty
-   */
-  propertyObserver: Ember.observer('activeProperty', function () {
-    const map = this.get('map'),
-      active = this.get('activeProperty'),
-      icon = L.divIcon({
-        className: 'active-property-marker',
-        html: '<svg><use xlink:href="#icon-marker"></use></svg>',
-        iconSize: L.point(30, 30)
-      });
-
-    let coordinates, marker;
-
-    map.eachLayer(function (layer) {
-      if (_.has(layer, 'options.icon')) {
-        map.removeLayer(layer);
-      }
-    });
-
-    if (active) {
-      coordinates = [_.get(active, 'longitude'), _.get(active, 'latitude')];
-
-      map.panTo(coordinates, { animate: true });
-      marker = L.marker(coordinates, { icon: icon });
-      map.addLayer(marker);
-    }
-  }),
-
-  /**
-   * calls #observerLayerHandler on change
-   * focuses feature layer on parcels matching #activeOwner.owner
-   * @observes activeOwner
-   */
-  ownerObserver: Ember.observer('activeOwner', observerLayerHandler.bind(null)),
-
-  /**
-   * calls #observerLayerHandler on change
-   * focuses feature layer on parcels matching #activeOwner.ownerzip
-   * @observes activeZip
-   */
-  zipObserver: Ember.observer('activeZip', observerLayerHandler.bind(null)),
-
+  // init map
   didInsertElement() {
     const controller = this,
-      map = new L.Map('map', { zoomControl: false }).setView(controller.get('center'), 15),
-      sql = controller.get('sqlService').default,
-      styles = controller.get('styleService').default,
-      layers = controller.get('layers').map(mapLayers(sql, styles)),
-      attr = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-
-      layerSource = {
-        user_name: ENV.USERNAME,
-        type: 'cartodb',
-        cartodb_logo: false,
-        attribution: attr,
-        sublayers: layers
-      };
+      map = new L.Map('map', { zoomControl: false }).setView(ENV.INIT_CENTER, ENV.INIT_ZOOM); // Detroit
 
     new L.Control.Zoom({ position: 'bottomright' }).addTo(map);
 
     L.tileLayer(`//{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png`)
       .addTo(map);
 
+    controller.set('map', map);
+
+    const layerSource = {
+      user_name: ENV.USERNAME,
+      type: 'cartodb',
+      cartodb_logo: false,
+      attribution: attr,
+    };
+
+    layerSource['sublayers'] = controller.get('layers').map(mapLayers(controller));
+
     cartodb.createLayer(map, layerSource)
       .addTo(map)
-      .done(function (layer) {
-        _.each(layer.getSubLayers(), addInteractive(controller));
-        controller.set('viz', layer);
+      .done(function (viz) {
+        controller.set('viz', viz);
+
+        each(viz.getSubLayers(), addInteractive(controller));
+
         document.querySelector('.loading-overlay').classList.remove('is-loading');
       });
 
-    this.set('map', map);
+  },
+
+  renderMap: function () {
+    const controller = this,
+      path = controller.get('router.currentPath'),
+      map = controller.get('map'),
+      layers = controller.get('layers'),
+      viz = controller.get('viz');
+
+    if (viz) { // ugh complexity
+      switch(path) {
+        case 'index.owner':
+          each(viz.getSubLayers(), layer => layer.hide());
+
+          viz.createSubLayer({
+            sql: `select * from ${table}\n` +
+                 `where ${mappings.owner} = '${controller.get('names')}'`,
+            cartocss: controller.get('styleService').default,
+            interactivity: 'cartodb_id'
+          });
+
+          each(viz.getSubLayers(), addInteractive(controller));
+
+          break;
+
+        case 'index.parcel':
+          map.panTo(controller.get('geography'), { animate: true });
+          break;
+
+        default:
+          // checks for & removes any extra layers added
+          if (viz.getSubLayerCount() > layers.length) {
+            viz.getSubLayers().pop().remove();
+          }
+
+          each(controller.get('layers'), toggleLayers(viz));
+      }
+    }
+
+  }.on('didRender').observes('viz'),
+
+  updateLayers: Ember.observer('layers.@each.visible', function () {
+    each(this.get('layers'), toggleLayers(this.get('viz')));
+  }),
+
+  actions: {
+    transition: function(id) {
+      this.get('router').transitionTo('index.parcel', id);
+    }
   }
 });
 
@@ -113,24 +99,15 @@ export default Ember.Component.extend({
  * @param  {[]} sublayers - array of cartoDb sublayers
  * @return {callback}
  */
-function toggleLayers (sublayers) {
-
-  // iterate over each sublayer
+function toggleLayers (viz) {
   return function (layer, index) {
+    const sublayer = viz.getSubLayer(index);
 
-    // if layer is not marked visible but
-    // is visible on the map then hide it
-    if (!layer.visible && sublayers[index].isVisible()) {
-      sublayers[index].hide();
+    if (layer.visible) {
+      sublayer.show();
+    } else {
+      sublayer.hide();
     }
-
-    // if layer is marked visible but
-    // isn't visible on map then show it
-    if (layer.visible && !sublayers[index].isVisible()) {
-      sublayers[index].show();
-    }
-
-    // TODO: is there a simpler way to do this?
   };
 }
 
@@ -140,12 +117,13 @@ function toggleLayers (sublayers) {
  * @param  {string} styles - string of cartoCSS
  * @return {callback}
  */
-function mapLayers(sql, styles) {
+function mapLayers(controller) {
   return function (layer, index) {
     return {
-      sql: sql + '\nwhere layer = ' + index,
-      cartocss: styles,
-      interactivity: 'cartodb_id'
+      sql: `select * from ${ENV.TABLE_NAME}\n` +
+           `where ${mappings.layer} = ${index}`,
+      cartocss: controller.get('styleService').default,
+      interactivity: `${mappings.id}`
     };
   };
 }
@@ -173,62 +151,9 @@ function featureClick(controller) {
   // find the parcel in the model by id
   // and set #activeProperty
   return function (event, latlng, pos, data) {
-    const id = data.cartodb_id,
-      active = controller.get('model').findBy('id', id);
+    const id = data[mappings.id];
 
-    controller.set('activeProperty', active);
+    controller.send('transition', id);
     ga('send', 'event', 'parcel', 'click', id);
   };
-}
-
-/**
- * handles observing both activeOwner & activeZip
- * @param  {controller} controller - Ember controller
- * @param  {String} key - the property being observed ('activeZip'|'activeOwner')
- */
-function observerLayerHandler(controller, key) {
-  const active = controller.get(key),
-    layer = controller.get('viz'),
-    layers = controller.get('layers'),
-    service = controller.get('sqlService'),
-    styles = controller.get('styleService').default,
-    sublayers = layer.getSubLayers(),
-    map = controller.get('map'),
-
-    // is true if active has no property id & the
-    // number of current sublayers is greater than
-    // the number of layers – this is fucked
-    toUnsetActiveLayer = !_.has(active, 'id') && _.size(sublayers) > _.size(layers);
-
-  let index;
-
-  // if active is not null
-  if (active) {
-    // hide every carto sublayer
-    _.each(sublayers, sublayer => sublayer.hide());
-
-    // create a new sublayer
-    layer.createSubLayer({
-      sql: service[key](active),
-      cartocss: styles,
-      interactivity: 'cartodb_id'
-    });
-
-    // set index to equal the index of the
-    // layer we just added
-    index = _.findLastIndex(layer.getSubLayers());
-
-    // add interactivity to our new layer
-    layer.getSubLayer(index).setInteraction(true);
-    layer.getSubLayer(index).on('featureClick', featureClick(controller));
-
-    map.panTo([_.get(active, 'longitude'), _.get(active, 'latitude')]);
-  }
-
-  if (toUnsetActiveLayer) {
-    // remove the last (i.e., most recently) added sublayer
-    _.last(layer.getSubLayers()).remove();
-    // run #toggleLayers over each of the sublayers
-    _.each(layers, toggleLayers(sublayers));
-  }
 }

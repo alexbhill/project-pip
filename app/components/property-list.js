@@ -1,23 +1,17 @@
-/**
- * property-details
- * component for handling listing properties
- * during user search
- */
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  classNames: ['properties-list', 'panel-item'],
   tagName: 'ul',
+  classNames: ['properties-list', 'panel-item'],
+  classNameBindings: [
+    'hasResults:has-results:no-results',
+    'hasSearch:has-search:no-search'
+  ],
 
-  actions: {
-    setActiveProperty(property) {
-      this.set('activeProperty', property);
-      ga('send', 'event', 'parcel', 'click', property.id);
-    },
+  hasResults: Ember.computed.notEmpty('results'),
+  hasSearch: Ember.computed.notEmpty('search'),
 
-    setActiveZip(property) {
-      this.sendAction('clear');
-      this.set('activeZip', property);
-    }
-  }
+  showMessage: Ember.computed('hasResults', 'hasSearch', function () {
+    return this.get('hasSearch') && !this.get('hasResults');
+  })
 });

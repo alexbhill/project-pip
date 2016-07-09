@@ -1,22 +1,22 @@
 .loading-overlay {
-  background-color: rgba(#fff, .35);
-  height: 100%;
-  left: 0;
-  margin: 0;
-  opacity: 0;
-  padding-top: 50vh;
-  pointer-events: none;
   position: absolute;
-  text-align: center;
-  top: 0;
-  transition: opacity ease .35s;
-  width: 100%;
   z-index: 30;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding-top: 50vh;
+  transition: opacity ease .35s;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  background-color: rgba(#fff, .35);
 
   &.is-loading {
-    opacity: 1;
-    pointer-events: auto;
     transition: opacity ease .35s;
+    pointer-events: auto;
+    opacity: 1;
   }
 }
 
@@ -26,15 +26,15 @@
 }
 
 .dot {
-  animation-duration: 1.4s;
-  animation-iteration-count: infinite;
-  animation-name: loading;
-  background-color: #3f3f3f;
-  border-radius: 50%;
   display: inline-block;
+  width: rem(25);
   height: rem(25);
   margin: 0 rem(3);
-  width: rem(25);
+  animation-name: loading;
+  animation-duration: 1.4s;
+  animation-iteration-count: infinite;
+  border-radius: 50%;
+  background-color: #3f3f3f;
 
   &:nth-child(2) {
     animation-delay: .2s;
@@ -47,17 +47,17 @@
 
 @keyframes loading {
   0% {
-    opacity: .2;
     transform: translateY(0);
+    opacity: .2;
   }
 
   20% {
-    opacity: 1;
     transform: translateY(rem(-10));
+    opacity: 1;
   }
 
   100% {
-    opacity: .2;
     transform: translateY(0);
+    opacity: .2;
   }
 }

@@ -1,52 +1,63 @@
 $max-height: rem(368);
 
-.has-active-property .streetview {
-  @include show-for-transition;
-}
-
 .streetview {
-  width: 100%;
   z-index: 1;
+  width: 100%;
+  margin-top: rem(16);
+
+  a:before {
+    content: 'Streetview';
+
+    @media (#{$large}) {
+      content: initial;
+    }
+  }
 
   img {
-    height: 100%;
-    max-height: $max-height;
-    opacity: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 100%;
-    z-index: 2;
+    display: none;
   }
 
   @media (#{$large}) {
-    box-shadow: $brand-border, $shadow;
-
     img {
-      display: block;
-      height: auto;
       position: relative;
+      z-index: 2;
+      display: block;
+      width: 100%;
+      max-height: $max-height;
+      opacity: 0;
     }
   }
 }
 
 .is-loaded img {
-  opacity: 1;
   transition: opacity $transition;
+  opacity: 1;
 }
 
 .streetview-container {
-  background-color: #e4e3df;
-  height: $max-height;
-  width: 100%;
-  position: relative;
+  @media (#{$large}) {
+    position: relative;
+    width: 100%;
+    height: $max-height;
+    background-color: #e4e3df;
+  }
+}
+
+.streetview a svg {
+  display: inline-block;
+  width: rem(16);
+  fill: white;
 }
 
 .streetview .loading-overlay {
-  opacity: 1;
-  padding-top: 50%;
+  @media (#{$large}) {
+    padding-top: 50%;
+    opacity: 1;
+  }
 }
 
 .streetview.is-loaded .loading-overlay {
-  opacity: 0;
+  @media (#{$large}) {
+    opacity: 0;
+  }
 }
