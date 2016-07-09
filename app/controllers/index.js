@@ -33,17 +33,15 @@ export default Ember.Controller.extend({
     }
   },
 
-  /**
-   * set results based on search
-   * matches either property.address or property.owner
-   * @observes search
-   */
   searchObserver: function () {
+    // debounce ajax calls on search
     Ember.run.debounce(this, this.fetchSearchResults, 750);
   }.observes('search'),
 
   actions: {
     clear() {
+      // clears most user interaction properties
+      // and transitions back to index
       this.set('search', null);
       this.set('results', null);
       this.set('geography', null);
@@ -60,13 +58,13 @@ export default Ember.Controller.extend({
 
 function mapper(item) {
   return {
-    type: 'parcel', // a string describing the object
-    id: item.cartodb_id, // unique id for cartodb
-    names: item.own_id.split(','), // name of the owner of this property or the managing LLC
-    alias: item.ownername1, // owner or managing llc
-    address: item.propaddr, // address of property
-    zip: item.propzip, // property zip
-    latitude: item.xcoord, // latitude
-    longitude: item.ycoord, // longitude
+    type: 'parcel',
+    id: item[mappings.id],
+    names: item[mappings.owner].split(','),
+    alias: item[mappings.alias],
+    address: item[mappings.address],
+    zip: item[mappings.zip],
+    latitude: item[mappings.latitude],
+    longitude: item[mappings.longitude]
   };
 }

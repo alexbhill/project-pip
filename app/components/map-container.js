@@ -14,7 +14,7 @@ export default Ember.Component.extend({
   // init map
   didInsertElement() {
     const controller = this,
-      map = new L.Map('map', { zoomControl: false }).setView(ENV.INIT_CENTER, ENV.INIT_ZOOM); // Detroit
+      map = new L.Map('map', { zoomControl: false }).setView(ENV.INIT_CENTER, ENV.INIT_ZOOM);
 
     new L.Control.Zoom({ position: 'bottomright' }).addTo(map);
 
@@ -51,11 +51,16 @@ export default Ember.Component.extend({
       layers = controller.get('layers'),
       viz = controller.get('viz');
 
-    if (viz) { // ugh complexity
+    // check if viz is defined yet
+    // since it's loaded async
+    if (viz) {
+      // begin the crazy complexity, sorry :(
       switch(path) {
         case 'index.owner':
+          // if user is on owner route hide all layers
           each(viz.getSubLayers(), layer => layer.hide());
 
+          // create new layer for just the owner's parcels
           viz.createSubLayer({
             sql: `select * from ${table}\n` +
                  `where ${mappings.owner} = '${controller.get('names')}'`,
@@ -63,16 +68,19 @@ export default Ember.Component.extend({
             interactivity: 'cartodb_id'
           });
 
+          // add interactivity to new layer
           each(viz.getSubLayers(), addInteractive(controller));
 
           break;
 
         case 'index.parcel':
+          // if user is on parcel route just pan the map to that parcel
           map.panTo(controller.get('geography'), { animate: true });
           break;
 
         default:
-          // checks for & removes any extra layers added
+          // all other routes (just index, really)
+          // check for & removes any extra layers added
           if (viz.getSubLayerCount() > layers.length) {
             viz.getSubLayers().pop().remove();
           }
@@ -82,6 +90,7 @@ export default Ember.Component.extend({
     }
 
   }.on('didRender').observes('viz'),
+  // observes viz since viz is loaded async
 
   updateLayers: Ember.observer('layers.@each.visible', function () {
     each(this.get('layers'), toggleLayers(this.get('viz')));
@@ -95,9 +104,7 @@ export default Ember.Component.extend({
 });
 
 /**
- * handles toggling of feature sublayers
- * @param  {[]} sublayers - array of cartoDb sublayers
- * @return {callback}
+ * Toggles sublayers
  */
 function toggleLayers (viz) {
   return function (layer, index) {
@@ -112,10 +119,7 @@ function toggleLayers (viz) {
 }
 
 /**
- * handles defining cartoDb sublayers
- * @param  {{}} sql - cartodb sql instance
- * @param  {string} styles - string of cartoCSS
- * @return {callback}
+ * Sets each carto sublayer
  */
 function mapLayers(controller) {
   return function (layer, index) {
@@ -129,31 +133,19 @@ function mapLayers(controller) {
 }
 
 /**
- * sets interactions on the featurelayers
- * @param {controller} controller - Ember controller
- * @returns {callback}
+ * Sets interactivity for each layer
  */
 function addInteractive(controller) {
   return function (sublayer) {
     sublayer.setInteraction(true);
 
-    sublayer.on('featureClick', featureClick(controller));
-  };
-}
+    sublayer.on('featureClick', function (event, latlng, pos, data) {
+      const id = data[mappings.id];
 
-/**
- * sets activeProperty on click
- * @param  {controller} controller - Ember controller
- * @return {callback}
- */
-function featureClick(controller) {
+      // transition route when clicking on parcel
+      controller.send('transition', id);
 
-  // find the parcel in the model by id
-  // and set #activeProperty
-  return function (event, latlng, pos, data) {
-    const id = data[mappings.id];
-
-    controller.send('transition', id);
-    ga('send', 'event', 'parcel', 'click', id);
+      ga('send', 'event', 'parcel', 'click', id);
+    });
   };
 }
