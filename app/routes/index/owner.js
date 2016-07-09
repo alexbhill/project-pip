@@ -36,8 +36,8 @@ export default Ember.Route.extend({
     ga('send', 'event', 'owner', undefined, model.names.join(', '));
 
     controller.set('names', model.names);
-    controller.set('results', model.parcels);
-    controller.set('geography', null);
+    controller.set('results', model.parcels); // show owner parcels
+    controller.set('geography', null); // clear specific parcel info
   }
 });
 

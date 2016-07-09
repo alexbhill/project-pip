@@ -27,8 +27,8 @@ export default Ember.Route.extend({
     ga('send', 'event', 'parcel', undefined, model.id);
 
     controller.set('geography', [model.longitude, model.latitude]);
-    controller.set('results', null);
-    controller.set('names', null);
+    controller.set('results', null); // clear results
+    controller.set('names', null); // clear owner data
   }
 });
 

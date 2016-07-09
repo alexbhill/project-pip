@@ -16,7 +16,7 @@
 module.exports = function(environment) {
   var ENV = {
     /*––––––––––––––––––––––––––––––––---|
-    | NOTE: Replace these six properties |
+    | NOTE: Replace these properties     |
     | with your own information          |
     –––––––––––––––––––––––––––––––––---*/
     USERNAME: 'ughitsaaron', // your cartodb username
@@ -27,6 +27,7 @@ module.exports = function(environment) {
                                   // first visit
     INIT_CENTER: [42.3653, -83.0693], // Detroit
     INIT_ZOOM: 14,
+    ANALYTICS: 'UA-47847770-5', // if you're into that sort of thing
 
     /*––––––––––––––––––––––––––––––––|
     | NOTE: It's best if you rename   |
