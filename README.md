@@ -38,7 +38,5 @@ This repository can be forked and customized with your own data. The only requir
 
 ### Steps
 1. Fork this repository
-2. Open `app/config/enviroment.js` and replace the values for `USERNAME`, `STREETVIEW_KEY`, and `TABLE_NAME`.
-3. Make sure the values for your CartoDB columns map the columns defined in `/public/assets/fetch-carto.js`.
-4. Customize `initParcel` in `app/rotues/index.js` with a valid CartoDB id from your data.
-5. Run the deploy script with `$ npm run deploy`.
+2. Open `app/config/enviroment.js` and replace the necessary properties with your own information.
+3. Run the deploy script with `$ npm run deploy`. It's all pretty easy.
