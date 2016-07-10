@@ -10,3 +10,9 @@
     <p class="owner-city-state">{{format-details model.city}}, {{model.state}} {{model.zip}}</p>
   </address>
 </div>
+
+{{#property-list
+  search=search
+  results=model.parcels
+  clear="clear"}}
+{{/property-list}}

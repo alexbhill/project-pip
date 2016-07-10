@@ -8,5 +8,11 @@ export default Ember.Component.extend({
     'hasSearch:has-search:no-search'
   ],
 
-  hasResults: Ember.computed.notEmpty('results')
+  hasResults: Ember.computed.notEmpty('results'),
+
+  actions: {
+    transition: function(id) {
+      this.get('router').transitionTo('index.parcel', id);
+    }
+  }
 });

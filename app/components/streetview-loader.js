@@ -33,9 +33,13 @@ export default Ember.Component.extend({
 });
 
 function setSrc(geometry) {
-  return `https://maps.googleapis.com/maps/api/streetview?size=640x640&location=${geometry.join(',')}&pitch=10&key=${ENV.STREETVIEW_KEY}`;
+  if (geometry) {
+    return `https://maps.googleapis.com/maps/api/streetview?size=640x640&location=${geometry.join(',')}&pitch=10&key=${ENV.STREETVIEW_KEY}`;
+  }
 }
 
 function setHref(geometry) {
-  return `http://maps.google.com/?cbll=${geometry.join(',')}&layer=c`;
+  if (geometry) {
+    return `http://maps.google.com/?cbll=${geometry.join(',')}&layer=c`;
+  }
 }

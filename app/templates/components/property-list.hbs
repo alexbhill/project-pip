@@ -1,12 +1,10 @@
 {{#each results as |property|}}
-  <li class="property">
-    {{#link-to 'index.parcel' property.id}}
-      <p>
-        {{#each property.names as |name|}}
-          <span class="name">{{format-details name}}</span>
-        {{/each}}
-      </p>
-      <p><span itemprop="streetAddress">{{format-details property.address}}</span></p>
-    {{/link-to}}
+  <li class="property" {{ action 'transition' property.id}}>
+    <p>
+      {{#each property.names as |name|}}
+        <span class="name">{{format-details name}}</span>
+      {{/each}}
+    </p>
+    <p><span itemprop="streetAddress">{{format-details property.address}}</span></p>
   </li>
 {{/each}}

@@ -1,6 +1,9 @@
 import Ember from 'ember';
 import ENV from 'property-praxis/config/environment';
 import map from 'npm:lodash/map';
+import words from 'npm:lodash/words';
+import difference from 'npm:lodash/difference';
+import intersection from 'npm:lodash/intersection';
 
 const username = ENV.USERNAME,
   table = ENV.TABLE_NAME,
@@ -37,6 +40,13 @@ export default Ember.Controller.extend({
     // debounce ajax calls on search
     Ember.run.debounce(this, this.fetchSearchResults, 750);
   }.observes('search'),
+
+  showAlias: Ember.computed('model.{names,alias}', function () {
+    const names = words(this.get('model.names').join(', ')),
+      alias = words(this.get('model.alias'));
+
+    return difference(name, alias).length && !intersection(alias, name).length;
+  }),
 
   actions: {
     clear() {

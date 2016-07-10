@@ -7,6 +7,8 @@ const username = ENV.USERNAME,
   mappings = ENV.DATA_MAPPINGS;
 
 export default Ember.Route.extend({
+  controllerName: 'index',
+
   model(params) {
     const url = `http://${username}.cartodb.com/api/v2/sql`,
       q = `select * from ${table}\n` +
@@ -30,14 +32,9 @@ export default Ember.Route.extend({
     });
   },
 
-  afterModel(model) {
-    const controller = this.controllerFor('index');
-
-    ga('send', 'event', 'owner', undefined, model.names.join(', '));
-
-    controller.set('names', model.names);
-    controller.set('results', model.parcels); // show owner parcels
-    controller.set('geography', null); // clear specific parcel info
+  setupController: function (controller, model) {
+    this.controllerFor('index').set('model', model);
+    this.controllerFor('index').set('names', model.names);
   }
 });
 

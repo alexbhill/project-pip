@@ -75,7 +75,7 @@ export default Ember.Component.extend({
 
         case 'index.parcel':
           // if user is on parcel route just pan the map to that parcel
-          map.panTo(controller.get('geography'), { animate: true });
+          map.panTo(controller.get('geometry'), { animate: true });
           break;
 
         default:
