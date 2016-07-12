@@ -41,11 +41,16 @@ export default Ember.Controller.extend({
     Ember.run.debounce(this, this.fetchSearchResults, 750);
   }.observes('search'),
 
-  showAlias: Ember.computed('model.{names,alias}', function () {
+  // compare difference & intersection between
+  // a parcel's `owner` and `alias` to determine
+  // if the alias is worth showing, e.g.,
+  // owner is 'Manuel Matty Moroun' and alias is
+  // 'Crown Enterprise', vs, 'Mouroun, Matty'
+  hasAlias: Ember.computed('model.{names,alias}', function () {
     const names = words(this.get('model.names').join(', ')),
       alias = words(this.get('model.alias'));
 
-    return difference(name, alias).length && !intersection(alias, name).length;
+    return difference(names, alias).length && !intersection(alias, names).length;
   }),
 
   actions: {
