@@ -32,7 +32,7 @@ export default Ember.Controller.extend({
 
       this.transitionToRoute('index');
 
-      $.getJSON(url, query).then(function (results) {
+      Ember.$.getJSON(url, query).then(function (results) {
         controller.set('results', map(results.rows, mapper));
       });
     }
