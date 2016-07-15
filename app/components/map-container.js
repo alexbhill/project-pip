@@ -22,34 +22,39 @@ export default Ember.Component.extend({
   // init map
   didInsertElement() {
     const controller = this,
-      map = new L.Map('map', { zoomControl: false }).setView(ENV.INIT_CENTER, ENV.INIT_ZOOM);
+      map = new L.Map('map', { zoomControl: false }).setView(ENV.INIT_CENTER, ENV.INIT_ZOOM),
 
+      // init cartodb layer
+      layerSource = {
+        user_name: ENV.USERNAME,
+        type: 'cartodb',
+        cartodb_logo: false,
+        attribution: attr,
+        sublayers: controller.get('layers').map(mapLayers(controller))
+      };
+
+    // move leaflet zoom controllers
     new L.Control.Zoom({ position: 'bottomright' }).addTo(map);
 
+    // add base layer
     L.tileLayer(`//{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png`)
       .addTo(map);
 
-    controller.set('map', map);
-
-    const layerSource = {
-      user_name: ENV.USERNAME,
-      type: 'cartodb',
-      cartodb_logo: false,
-      attribution: attr,
-    };
-
-    layerSource['sublayers'] = controller.get('layers').map(mapLayers(controller));
-
+    // generate cartodb layers
     cartodb.createLayer(map, layerSource)
       .addTo(map)
       .done(function (viz) {
-        controller.set('viz', viz);
-
         each(viz.getSubLayers(), addInteractive(controller));
 
+        // remove loaders
         document.querySelector('.loading-overlay').classList.remove('is-loading');
+
+        // store cartodb viz in controller for later use
+        controller.set('viz', viz);
       });
 
+    // store map in controller for later use
+    controller.set('map', map);
   },
 
   renderMap: function () {
