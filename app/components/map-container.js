@@ -1,10 +1,18 @@
 import Ember from 'ember';
 import each from 'npm:lodash/each';
+import has from 'npm:lodash/has';
 import ENV from 'property-praxis/config/environment';
 
 const table = ENV.TABLE_NAME,
   mappings = ENV.DATA_MAPPINGS,
-  attr = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+  attr = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  icon = L.divIcon({
+    iconSize: [32, 32],
+    className: 'active-parcel',
+    html: `<svg viewBox="0 0 5 5">\n` +
+    `\t<path d="M2 1 h1 v1 h1 v1 h-1 v1 h-1 v-1 h-1 v-1 h1 z">\n` +
+    `</svg>`
+  });
 
 export default Ember.Component.extend({
   elementId: 'map',
@@ -51,6 +59,13 @@ export default Ember.Component.extend({
       layers = controller.get('layers'),
       viz = controller.get('viz');
 
+    // remove active parcel icon on render
+    map.eachLayer(function (layer) {
+      if (has(layer, 'options.icon')) {
+        map.removeLayer(layer)
+      }
+    });
+
     // check if viz is defined yet
     // since it's loaded async
     if (viz) {
@@ -74,8 +89,13 @@ export default Ember.Component.extend({
           break;
 
         case 'index.parcel':
+          const geometry = controller.get('geometry');
+
           // if user is on parcel route just pan the map to that parcel
-          map.panTo(controller.get('geometry'), { animate: true });
+          map.panTo(geometry, { animate: true });
+          // create marker indicating activated parcel
+          L.marker(geometry, { icon: icon}).addTo(map);
+
           break;
 
         default:

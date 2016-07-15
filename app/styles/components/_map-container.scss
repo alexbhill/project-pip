@@ -16,7 +16,13 @@
   background-color: $brand;
 }
 
-.active-property-marker {
-  fill: #e95151;
-  stroke: #212121;
+.active-parcel svg {
+  width: rem(42);
+  height: rem(42);
+  stroke: $text;
+  fill: $brand-secondary;
+  fill-opacity: 0.95;
+  stroke-width: rem(0.15);
+  transform:rotateZ(45deg);
+  stroke-linejoin: round;
 }
