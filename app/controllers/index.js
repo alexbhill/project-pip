@@ -15,9 +15,11 @@ export default Ember.Controller.extend({
   // array of layer data
   layerService: Ember.inject.service('layers'),
   layers: Ember.computed.reads('layerService.layers'),
+  mapData: Ember.inject.service(),
 
   fetchSearchResults: function () {
     const controller = this,
+      { mapper } = controller.get('mapData'),
       url = `http://${username}.cartodb.com/api/v2/sql`,
       search = controller.get('search');
 
@@ -70,16 +72,3 @@ export default Ember.Controller.extend({
     }
   }
 });
-
-function mapper(item) {
-  return {
-    type: 'parcel',
-    id: item[mappings.id],
-    names: item[mappings.owner].split(','),
-    alias: item[mappings.alias],
-    address: item[mappings.address],
-    zip: item[mappings.zip],
-    latitude: item[mappings.latitude],
-    longitude: item[mappings.longitude]
-  };
-}

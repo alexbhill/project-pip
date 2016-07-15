@@ -8,9 +8,11 @@ const username = ENV.USERNAME,
 
 export default Ember.Route.extend({
   controllerName: 'index',
-  
+  mapData: Ember.inject.service(),
+
   model(params) {
-    const url = `http://${username}.cartodb.com/api/v2/sql`,
+    const { mapper } = this.get('mapData'),
+      url = `http://${username}.cartodb.com/api/v2/sql`,
       q = `select * from ${table}\n` +
           `where ${mappings.id} = ${params.id}`;
 
@@ -28,16 +30,3 @@ export default Ember.Route.extend({
     this.controllerFor('index').set('geometry', [model.longitude, model.latitude]);
   }
 });
-
-function mapper(item) {
-  return {
-    type: 'parcel',
-    id: item[mappings.id],
-    names: item[mappings.owner].split(','),
-    alias: item[mappings.alias],
-    address: item[mappings.address],
-    zip: item[mappings.zip],
-    latitude: item[mappings.latitude],
-    longitude: item[mappings.longitude]
-  };
-}
