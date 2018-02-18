@@ -8,7 +8,7 @@ export default Ember.Service.extend({
   default: `#${table} {\n` +
     `\tpolygon-opacity: 0.8;\n` +
     `\tline-width: 2;\n` +
-    `\tline-opacity: 1;\n` +
+    `\tline-opacity: 0.25;\n` +
   `}\n` +
   `#${table} [ ${mappings.layer} = 0 ] {\n` +
     `\tpolygon-fill: #feedde;\n` +
