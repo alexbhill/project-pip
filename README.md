@@ -2,13 +2,13 @@
 
 Property Praxis is an interactive web application that visually maps the impact of speculative investment in the housing market on Detroit's physical and topographical geography.
 
-It is a project of the Digital Interactive Research Trajectories (DIRT)Collective. DIRT is:
+Property Praxis is a project of the Urban Praxis Workshop. Property Praxis was developed by:
 
 * [Joshua Akers](http://umdearborn.edu/casl/jakers/) (Research)
 * [Alex B. Hill](http://design.alexbhill.org/) (Design/Research)
 * [Aaron Petcoff](http://aaronpetcoff.me/) (Web Design/Development)
 
-More information about the project is available at [http://propertypraxis.tumblr.com](http://propertypraxis.tumblr.com).
+More information about the project is available at [https://urbanpraxis.org/portfolio/property-praxis/](https://urbanpraxis.org/portfolio/property-praxis/).
 
 For information about building your own custom Property Praxis map for visualizing property speculation data, see the section on [customization](#customizing) below.
 
