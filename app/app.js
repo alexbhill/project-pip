@@ -5,7 +5,7 @@ import config from './config/environment';
 
 var App;
 
-console.log(`Property Praxis is a project of the Digital Interactive Research Trajectories (DIRT) collective.
+console.log(`Property Praxis is a project of the Urban Praxis Workshop.
 
   We are:
 
