@@ -3,22 +3,22 @@ import Ember from 'ember';
 export default Ember.Service.extend({
   layers: [{
       id: 0,
-      color: '#008aad',
+      color: '#feedde',
       description: '< 50',
       visible: true
     }, {
       id: 1,
-      color: '#696684',
+      color: '#fdbe85',
       description: '50 – 250',
       visible: true
     }, {
       id: 2,
-      color: '#ff935e',
+      color: '#fd8d3c',
       description: '250 – 500',
       visible: true
     }, {
       id: 3,
-      color: '#ef554a',
+      color: '#d94701',
       description: '>= 500',
       visible: true
     }]
